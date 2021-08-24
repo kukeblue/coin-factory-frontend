@@ -1,56 +1,82 @@
 .register-page {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../assets/images/bg_sign_in.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 .register-header {
-  height: 44px;
-  width: 386px;
-  text-align: left;
-  background-image: url(http://coin-factory-static.kukechen.top/login-header.jpeg);
-  background-size: auto 100%;
-  background-repeat: no-repeat;
+    height: 44px;
+    width: 386px;
+    text-align: left;
+    background-image: url('../../assets/images/login-header.jpeg');
+    background-size: auto 100%;
+    background-repeat: no-repeat;
 }
 .register-card {
-  width: 418px;
-  background-color: #f5f5f5;
-  padding: 0px 36px;
-  box-sizing: border-box;
-  background: #ffffff;
-  box-shadow: 0px 9px 37px 0px rgba(4, 0, 0, 0.1);
-  border-radius: 4px;
-  .ant-input {
-    height: 42px;
+    width: 418px;
+    background-color: #f5f5f5;
+    padding: 0px 36px;
+    box-sizing: border-box;
+    background: #ffffff;
+    box-shadow: 0px 9px 37px 0px rgba(4, 0, 0, 0.1);
     border-radius: 4px;
-  }
+    .ant-input {
+        height: 42px;
+        border-radius: 4px;
+    }
+    .ant-input-password {
+        height: 42px;
+        border-radius: 4px;
+        .ant-input {
+            height: 32px;
+        }
+    }
 }
 .register-title {
-  font-size: 17px;
-  color: #23282b;
-  margin: 24px;
-  text-align: center;
+    font-size: 17px;
+    color: #23282b;
+    margin: 24px;
+    text-align: center;
 }
 .register-type-select {
-  border-bottom: 1px solid #ddd;
-  box-sizing: border-box;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
 }
 .register-type-select-wrap {
-  padding: 0px !important;
-  width: 80px !important;
+    padding: 0px !important;
+    width: 80px !important;
 }
 .ant-menu-horizontal > .ant-menu-item::after,
 .ant-menu-horizontal > .ant-menu-submenu::after {
-  right: 0px !important;
-  left: 0px !important;
-  // position: relative;
-  // top: 2px;
-  z-index: 998;
+    right: 0px !important;
+    left: 0px !important;
+    // position: relative;
+    // top: 2px;
+    z-index: 998;
 }
 .register-type-select-item {
-  width: 80px;
-  font-size: 15px;
-  color: #6c6c6c;
-  line-height: 40px;
-  text-align: center;
-  position: relative;
-  top: 2px;
+    width: 80px;
+    font-size: 15px;
+    color: #6c6c6c;
+    line-height: 40px;
+    text-align: center;
+    position: relative;
+    top: 2px;
+}
+.register-agreement {
+    color: #5c5c5c;
+    font-weight: 400;
+    color: #5c5c5c;
+    line-height: 24px;
+}
+.register-button {
+    height: 40px;
+    width: 100%;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+.register-invitationCode-label {
+    color: #9aa5b5;
+    line-height: 24px;
 }

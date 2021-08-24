@@ -1,3 +1,2 @@
 yarn build;
-scp -r /Users/huanchen/Project/out/tms/dist root@chtms:/opt/nginx/
-ssh root@chtms "cd /opt/nginx/; rm -rf _tms-frontend; mv tms-frontend _tms-frontend;mv dist tms-frontend"
+scp -r /Users/huanchen/Project/out/coin-factory-frontend/dist/ root@chome:/usr/share/ch_project/coinbene-frontend/
