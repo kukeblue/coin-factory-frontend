@@ -1,15 +1,31 @@
 import { Button } from 'antd'
-import React from 'react'
-import { ChForm, FormItemType } from 'ch-ui'
+import React, { useEffect } from 'react'
+import { ChForm, ChUtils, FormItemType } from 'ch-ui'
 import { createContainer, useContainer } from 'unstated-next'
-import './index.less'
 import { useHistory } from 'react-router-dom'
+import { useForm } from 'antd/lib/form/Form'
+import './index.less'
 
-function useLoginStore() {
+function useLoginPageStore() {
     const history = useHistory()
-
-    const login = () => {
-        console.debug('debug: to do login')
+    const [formRef] = useForm()
+    const login = (ticket: string, randstr: string) => {
+        formRef.validateFields().then((values) => {
+            ChUtils.Ajax.request({
+                url: 'http://uc.sqd8.cn/api/login',
+                method: 'post',
+                data: {
+                    username: values.username,
+                    password: values.password,
+                    ticket,
+                    randstr,
+                },
+            }).then((res: { code: number; msg: string; data: any }) => {
+                if (res.code != -1) {
+                    history.push('/')
+                }
+            })
+        })
     }
     const toRegister = () => {
         console.debug('debug: to do register')
@@ -18,18 +34,33 @@ function useLoginStore() {
     return {
         login,
         toRegister,
+        formRef,
     }
 }
 
-const UserStore = createContainer(useLoginStore)
+const LoginPageStore = createContainer(useLoginPageStore)
 
 function LoginCard() {
-    const { login, toRegister } = useContainer(UserStore)
+    const { login, toRegister, formRef } = useContainer(LoginPageStore)
+
+    useEffect(() => {
+        // @ts-ignore
+        window.loginVerifyCallBack = function (res) {
+            console.log('callback:', res)
+            // res（用户主动关闭验证码）= {ret: 2, ticket: null}
+            // res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
+            if (res.ret === 0) {
+                // 蒙蔽接口反了
+                login(res.ticket, res.randstr)
+            }
+        }
+    }, [])
 
     return (
         <div className="login-card flex-column-center m-b-60">
             <div className="login-title">登陆您的账号</div>
             <ChForm
+                form={formRef}
                 className="login-form"
                 formData={[
                     {
@@ -47,7 +78,7 @@ function LoginCard() {
                     },
                 ]}
             />
-            <Button id="TencentCaptcha" data-appid="2006315435" data-cbfn="callbackName" data-biz-state="data-biz-state" onClick={login} type="primary" className="login-button">
+            <Button id="TencentCaptcha" data-appid="2006315435" data-cbfn="loginVerifyCallBack" data-biz-state="data-biz-state" type="primary" className="login-button">
                 登录
             </Button>
             <div className="flex-between m-t-10 m-b-30" style={{ width: '100%' }}>
@@ -66,9 +97,9 @@ function Login() {
     return (
         <div className="login-page flex-column-all-center">
             <div className="login-header m-b-20"></div>
-            <UserStore.Provider>
+            <LoginPageStore.Provider>
                 <LoginCard />
-            </UserStore.Provider>
+            </LoginPageStore.Provider>
         </div>
     )
 }

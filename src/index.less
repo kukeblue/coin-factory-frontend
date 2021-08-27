@@ -1,13 +1,30 @@
 @import '~antd/lib/style/themes/default.less';
 @import '~antd/dist/antd.less';
-@primary-color: #15C8C0;
+@primary-color: #15c8c0;
+
+@font-face {
+    font-family: 'iconfont'; /* Project id 2769473 */
+    src: url('//at.alicdn.com/t/font_2769473_vzsols6gos.woff2?t=1629931510449') format('woff2'), url('//at.alicdn.com/t/font_2769473_vzsols6gos.woff?t=1629931510449') format('woff'), url('//at.alicdn.com/t/font_2769473_vzsols6gos.ttf?t=1629931510449') format('truetype');
+}
+
+.iconfont {
+    font-family: 'iconfont' !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-xiaoxi:before {
+    content: '\e601';
+}
 
 #root,
 body,
 html {
     width: 100%;
     height: 100%;
-    font-family: "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
+    font-family: 'PingFang SC', 'Hiragino Sans GB', 'Heiti SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei';
     margin: 0;
 }
 
@@ -22,47 +39,47 @@ div {
 
 .loopStyle(@counter) when (@counter > 0) {
     .p-@{counter} {
-        padding: (1px* @counter);
+        padding: (1px * @counter);
     }
 
     .p-t-@{counter} {
-        padding-top: (1px* @counter);
+        padding-top: (1px * @counter);
     }
 
     .p-r-@{counter} {
-        padding-right: (1px* @counter);
+        padding-right: (1px * @counter);
     }
 
     .p-b-@{counter} {
-        padding-bottom: (1px* @counter);
+        padding-bottom: (1px * @counter);
     }
 
     .p-l-@{counter} {
-        padding-left: (1px* @counter);
+        padding-left: (1px * @counter);
     }
 
     .m-@{counter} {
-        margin: (1px* @counter);
+        margin: (1px * @counter);
     }
 
     .m-t-@{counter} {
-        margin-top: (1px* @counter);
+        margin-top: (1px * @counter);
     }
 
     .m-r-@{counter} {
-        margin-right: (1px* @counter);
+        margin-right: (1px * @counter);
     }
 
     .m-b-@{counter} {
-        margin-bottom: (1px* @counter);
+        margin-bottom: (1px * @counter);
     }
 
     .m-l-@{counter} {
-        margin-left: (1px* @counter);
+        margin-left: (1px * @counter);
     }
 
     .fz-@{counter} {
-        font-size: (1px* @counter);
+        font-size: (1px * @counter);
     }
 
     .width@{counter} {
@@ -140,4 +157,3 @@ div {
     align-items: center;
     justify-content: center;
 }
-

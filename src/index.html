@@ -12,42 +12,6 @@
     <div id="root"></div>
 </body>
 <script>
-    // 回调函数需要放在全局对象window下
-    window.callbackName = function (res) {
-        // 返回结果
-        // ret         Int       验证结果，0：验证成功。2：用户主动关闭验证码。
-        // ticket      String    验证成功的票据，当且仅当 ret = 0 时 ticket 有值。
-        // CaptchaAppId       String    验证码应用ID。
-        // bizState    Any       自定义透传参数。
-        // randstr     String    本次验证的随机串，请求后台接口时需带上。
-        console.log('callback:', res);
 
-        // res（用户主动关闭验证码）= {ret: 2, ticket: null}
-        // res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
-        if (res.ret === 0) {
-            // 复制结果至剪切板
-            let str = `【randstr】->【${res.randstr}】      【ticket】->【${res.ticket}】`;
-            let ipt = document.createElement('input');
-            ipt.value = str;
-            document.body.appendChild(ipt);
-            ipt.select();
-            document.execCommand("Copy");
-            document.body.removeChild(ipt);
-            //alert('1. 返回结果（randstr、ticket）已复制到剪切板，ctrl+v 查看。\n2. 打开浏览器控制台，查看完整返回结果。');
-            $.ajax({
-                type:"post",
-                url:"/api/tencent/captcha",
-                data:"ticket="+res.ticket+"&randstr="+res.randstr,
-                success:function (message) {
-                    if (message.code<=0){
-                            alert("验证成功")
-                    }else{
-                            alert("验证失败")
-                    }
-
-                }
-            });
-        }
-    }
 </script>
 </html>
