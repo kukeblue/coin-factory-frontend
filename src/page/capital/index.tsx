@@ -78,7 +78,6 @@ function Capital() {
                         </Menu.Item>
                         <Menu.Item style={{ height: 55 }} className="capital-side-item" key="3">
                             <div className="capital-menu-item flex-center">
-                                {' '}
                                 <AccountBookOutlined style={{ fontSize: 20 }} /> <span>提充管理</span>
                             </div>
                         </Menu.Item>

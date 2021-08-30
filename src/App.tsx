@@ -2,25 +2,28 @@ import React from 'react'
 import Layout from './layout/index'
 import './index.less'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import loadable from '@loadable/component'
-import Capital from './page/capital'
-import Login from './page/login'
-import Register from './page/register'
+// import loadable from '@loadable/component'
+import { routes, needLoginRoutes } from './routes'
 
 export function App() {
     return (
         <Router>
-            <Route path="/login">
-                <Login />
-            </Route>
-            <Route path="/register">
-                <Register />
-            </Route>
+            {routes.map((item) => {
+                return (
+                    <Route key={item.path} path={item.path}>
+                        {item.component}
+                    </Route>
+                )
+            })}
             <Layout>
                 <Switch>
-                    <Route path="/">
-                        <Capital />
-                    </Route>
+                    {needLoginRoutes.map((item) => {
+                        return (
+                            <Route key={item.path} path={item.path}>
+                                {item.component}
+                            </Route>
+                        )
+                    })}
                 </Switch>
             </Layout>
         </Router>

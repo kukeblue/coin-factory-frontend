@@ -12,7 +12,7 @@ function useLoginPageStore() {
     const login = (ticket: string, randstr: string) => {
         formRef.validateFields().then((values) => {
             ChUtils.Ajax.request({
-                url: 'http://uc.sqd8.cn/api/login',
+                url: '/api/login',
                 method: 'post',
                 data: {
                     username: values.username,
