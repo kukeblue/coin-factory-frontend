@@ -1,7 +1,25 @@
 import { Alert, Radio } from 'antd'
-import React from 'react'
+import React, { useState } from 'react'
 import './index.less'
 import constants from '../../config/constants'
+import { ChUtils } from 'ch-ui'
+import { createContainer } from 'unstated-next'
+
+function UseSecurityPageStore() {
+    const [userInfo, setUserInfo] = useState()
+    ChUtils.Ajax.request({
+        url: '/api/get_user_info',
+        method: 'post',
+        data: {},
+    }).then((res) => {
+        console.log(res)
+    })
+    return {
+        userInfo,
+    }
+}
+
+const SecurityPageStore = createContainer(UseSecurityPageStore)
 
 function Header() {
     return (
@@ -27,7 +45,7 @@ function SecurityCertificateStatus() {
     return (
         <div className="security-certificate">
             <div>个人认证</div>
-            <div className="security-certificate-tip m-t-5">完成个人认证有助于保护账户安全，提高提现额度及交易权限 </div>
+            <div className="security-certificate-tip m-t-5">完成个人认证有助于保护账户安全，提高提现额度及交易权限</div>
             <div className="m-t-15">
                 <Radio checked>手机认证</Radio>
                 <Radio checked>邮箱认证</Radio>
@@ -143,4 +161,8 @@ function SecurityPage() {
     )
 }
 
-export default SecurityPage
+export default () => (
+    <SecurityPageStore.Provider>
+        <SecurityPage />
+    </SecurityPageStore.Provider>
+)
