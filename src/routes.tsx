@@ -18,10 +18,18 @@ export const routes = [
 export const needLoginRoutes = [
     {
         path: '/capital',
-        component: <Capital />,
+        routerPath: '/capital',
     },
     {
-        path: '/',
-        component: <Home />,
+        path: '/security',
+        routerPath: '/security',
+    },
+    {
+        path: '/application',
+        routerPath: '/application',
+    },
+    {
+        path: '/home',
+        routerPath: '/',
     },
 ]

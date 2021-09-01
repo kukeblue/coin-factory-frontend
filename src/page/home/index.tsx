@@ -2,9 +2,22 @@ import { Col, Progress, Row, Button, Table } from 'antd'
 import { ChTablePanel, ChUtils } from 'ch-ui'
 import React, { useEffect, useState } from 'react'
 import './index.less'
-import { IMarket } from './interface'
+import { IMarket, IOpenCoin } from './interface'
 
 function OpenedCoins() {
+    const [openCoins, setOpenCoins] = useState<IOpenCoin[]>()
+    useEffect(() => {
+        ChUtils.Ajax.request({
+            url: '/api/get_open_coins',
+            data: {},
+            method: 'post',
+        }).then((res) => {
+            if (res.data) {
+                setOpenCoins(res.data)
+            }
+        })
+    }, [])
+
     return (
         <div className="home-openedCoins">
             <div className="title1 m-b-10 m-l-5">开通币种</div>

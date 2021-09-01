@@ -2,7 +2,7 @@ import React from 'react'
 import Layout from './layout/index'
 import './index.less'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-// import loadable from '@loadable/component'
+import loadable from '@loadable/component'
 import { routes, needLoginRoutes } from './routes'
 
 export function App() {
@@ -10,7 +10,7 @@ export function App() {
         <Router>
             {routes.map((item) => {
                 return (
-                    <Route key={item.path} path={item.path}>
+                    <Route exact key={item.path} path={item.path}>
                         {item.component}
                     </Route>
                 )
@@ -18,9 +18,12 @@ export function App() {
             <Layout>
                 <Switch>
                     {needLoginRoutes.map((item) => {
+                        const DOM = loadable(() => import('./page' + item.path), {
+                            fallback: <div>loading...</div>,
+                        })
                         return (
-                            <Route key={item.path} path={item.path}>
-                                {item.component}
+                            <Route exact key={item.path} path={item.routerPath}>
+                                <DOM />
                             </Route>
                         )
                     })}

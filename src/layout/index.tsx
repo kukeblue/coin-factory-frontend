@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import './index.less'
 import { Menu } from 'antd'
 import { useHistory, useLocation } from 'react-router-dom'
+import { SyncOutlined } from '@ant-design/icons'
 
 const { Header } = Layout
 
@@ -15,6 +16,14 @@ const LayoutConfig = {
         {
             path: '/capital',
             name: '资金',
+        },
+        {
+            path: '/security',
+            name: '安全',
+        },
+        {
+            path: '/application',
+            name: '应用中心',
         },
     ],
 }
@@ -40,6 +49,10 @@ function LayoutHeader() {
                 <div className="flex-center">
                     <div className="layout-logo"></div>
                     <div className="layout-splitline"></div>
+                    <div className="layout-change-application">
+                        <SyncOutlined />
+                        切换应用
+                    </div>
                     <Menu selectedKeys={[currentPath]} theme="dark" className="layout-menu" mode="horizontal">
                         {headerMenus.map((item) => {
                             return (
@@ -54,8 +67,6 @@ function LayoutHeader() {
                             )
                         })}
 
-                        <Menu.Item key="2">应用中心</Menu.Item>
-                        <Menu.Item key="3">安全</Menu.Item>
                         <Menu.Item key="5">开发文档</Menu.Item>
                         <Menu.Item key="6">上币申请</Menu.Item>
                         <Menu.Item key="7">商户中心</Menu.Item>

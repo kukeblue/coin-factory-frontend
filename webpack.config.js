@@ -21,8 +21,14 @@ module.exports = {
                 target: 'http://uc.sqd8.cn/',
                 changeOrigin: true,
                 pathRewrite: { '^/api': '/api' },
+                onProxyReq: function (proxyReq, req, res) {
+                    // 监听代理的返回结果
+                    console.log('Cookie:', proxyReq.getHeader('Cookie'))
+                },
             },
         },
+
+        disableHostCheck: true,
         contentBase: './dist',
         historyApiFallback: true,
         hot: true,

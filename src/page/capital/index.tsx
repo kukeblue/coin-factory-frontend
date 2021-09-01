@@ -4,9 +4,8 @@ import React, { useEffect, useState } from 'react'
 import { createContainer } from 'unstated-next'
 import './index.less'
 import { ChForm, ChTablePanel, FormItemType } from 'ch-ui'
+import constants from '../../config/constants'
 const { SubMenu } = Menu
-
-const alertMessage = '应用属于免费试用期，过期后产品将不能正常使用，请及联系XX续费，以免影响运营'
 
 function CapitalContent() {
     return (
@@ -56,7 +55,7 @@ function Capital() {
     return (
         <div className="capital">
             <div className="p-t-10 p-b-10">
-                <Alert message={alertMessage} type="warning" showIcon closable />
+                <Alert message={constants.rechargeTip} type="warning" showIcon closable />
             </div>
             <div className="capital-page flex-center">
                 <div className="capital-side">
