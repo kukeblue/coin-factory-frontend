@@ -98,6 +98,9 @@ function Register(): JSX.Element {
                         <Button className="register-button" type="primary">
                             注册
                         </Button>
+                        <div className="m-b-30 register-to-login">
+                            已有账号跳转<a href="/login">登录</a>
+                        </div>
                     </div>
                 </div>
             </RegisterPageStore.Provider>

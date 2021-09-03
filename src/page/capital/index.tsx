@@ -5,6 +5,8 @@ import { createContainer } from 'unstated-next'
 import './index.less'
 import { ChForm, ChTablePanel, FormItemType } from 'ch-ui'
 import constants from '../../config/constants'
+import { Route, Switch, useHistory } from 'react-router-dom'
+import CommonPage from '../../component/template/CommonPage'
 const { SubMenu } = Menu
 
 function CapitalContent() {
@@ -53,38 +55,27 @@ function CapitalContent() {
 
 function Capital() {
     return (
-        <div className="capital">
-            <div className="p-t-10 p-b-10">
-                <Alert message={constants.rechargeTip} type="warning" showIcon closable />
-            </div>
-            <div className="capital-page flex-center">
-                <div className="capital-side">
-                    <div className="capital-side-icon flex-column-all-center">
-                        <div className="side-icon"></div>
-                        <div className="capital-side-icon-text">资金</div>
-                    </div>
-                    <Menu className="m-t-80" defaultSelectedKeys={['1']} mode="inline">
-                        <Menu.Item style={{ height: 55 }} className="capital-side-item" key="1">
-                            <div className="capital-menu-item flex-center">
-                                <DollarOutlined style={{ fontSize: 20 }} /> <span>商户资金</span>
-                            </div>
-                        </Menu.Item>
-                        <Menu.Item style={{ height: 55 }} className="capital-side-item" key="2">
-                            <div className="capital-menu-item flex-center">
-                                <EnvironmentOutlined style={{ fontSize: 20 }} />
-                                <span>地址管理</span>
-                            </div>
-                        </Menu.Item>
-                        <Menu.Item style={{ height: 55 }} className="capital-side-item" key="3">
-                            <div className="capital-menu-item flex-center">
-                                <AccountBookOutlined style={{ fontSize: 20 }} /> <span>提充管理</span>
-                            </div>
-                        </Menu.Item>
-                    </Menu>
-                </div>
-                <CapitalContent />
-            </div>
-        </div>
+        <CommonPage
+            pageName="资金"
+            pageRouters={[
+                {
+                    path: '/capital',
+                    name: '商户资金',
+                    component: <CapitalContent />,
+                    icon: <AccountBookOutlined />,
+                },
+                {
+                    path: '/capital/address',
+                    name: '地址管理',
+                    icon: <EnvironmentOutlined />,
+                },
+                {
+                    path: '/capital/recharge',
+                    name: '充值管理',
+                    icon: <DollarOutlined />,
+                },
+            ]}
+        />
     )
 }
 

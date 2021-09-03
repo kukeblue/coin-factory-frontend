@@ -29,7 +29,7 @@ export const needLoginRoutes = [
         routerPath: '/application',
     },
     {
-        path: '/home',
-        routerPath: '/',
+        path: '/applicationCenter',
+        routerPath: '/applicationCenter',
     },
 ]

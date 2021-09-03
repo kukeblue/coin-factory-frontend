@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import './index.less'
 const { chHooks } = ChUtils
 
-function VerificationCodeInput(): JSX.Element {
+function VerificationCodeInput(props: { onGetCode?: () => Promise<boolean> }): JSX.Element {
     const [buttonCount, setButtonCount] = useState(0)
     const [isCountDown, setIsCountDown] = useState<boolean>(false)
     chHooks.useInterval(
@@ -21,7 +21,12 @@ function VerificationCodeInput(): JSX.Element {
 
     const reciprocal = () => {
         if (isCountDown) return
-        setIsCountDown(true)
+        props.onGetCode &&
+            props.onGetCode().then((res) => {
+                if (res) {
+                    setIsCountDown(true)
+                }
+            })
     }
 
     return (

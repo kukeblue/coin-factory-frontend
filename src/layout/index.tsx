@@ -4,6 +4,7 @@ import './index.less'
 import { Menu } from 'antd'
 import { useHistory, useLocation } from 'react-router-dom'
 import { SyncOutlined } from '@ant-design/icons'
+import { GlobalStore } from '../store/globalStore'
 
 const { Header } = Layout
 
@@ -22,7 +23,7 @@ const LayoutConfig = {
             name: '安全',
         },
         {
-            path: '/application',
+            path: '/applicationCenter',
             name: '应用中心',
         },
     ],
@@ -33,7 +34,7 @@ function LayoutHeader() {
     const history = useHistory()
     const [currentPath, setCurrentPath] = useState('')
     const { headerMenus } = LayoutConfig
-
+    const { currentApp } = GlobalStore.useContainer()
     useEffect(() => {
         setCurrentPath(location.pathname)
     }, [location.pathname])
@@ -49,9 +50,14 @@ function LayoutHeader() {
                 <div className="flex-center">
                     <div className="layout-logo"></div>
                     <div className="layout-splitline"></div>
-                    <div className="layout-change-application">
+                    <div
+                        onClick={() => {
+                            history.push('/application')
+                        }}
+                        className={location.pathname === '/application' ? 'layout-change-application active' : 'layout-change-application'}
+                    >
                         <SyncOutlined />
-                        切换应用
+                        <span className="m-l-5">切换应用</span>
                     </div>
                     <Menu selectedKeys={[currentPath]} theme="dark" className="layout-menu" mode="horizontal">
                         {headerMenus.map((item) => {
@@ -73,6 +79,9 @@ function LayoutHeader() {
                     </Menu>
                 </div>
                 <div className="flex-center layout-header-right">
+                    <div style={{ fontSize: 8 }} className="layout-header-option m-r-10">
+                        当前应用:<a className="m-l-5">{currentApp?.app_name || '无'}</a>
+                    </div>
                     <div className="flex-center layout-header-option m-r-20">
                         <span className="iconfont icon-xiaoxi"></span>
                         消息

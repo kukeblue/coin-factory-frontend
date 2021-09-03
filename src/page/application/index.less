@@ -17,14 +17,14 @@
     box-sizing: border-box;
     padding: 35px 35px;
     .application-card {
+        height: 165px;
+        margin-bottom: 20px;
         width: 94%;
-        height: 120px;
         border-radius: 7px;
         background-image: url('../../assets/images/bg_home-card.png');
-        background-size: 100% 100%;
+        background-size: 100% auto;
         background-repeat: no-repeat;
-        padding: 30px 25px;
-        padding-left: 30px;
+        cursor: default;
     }
     .create-application-icon {
         width: 40px;
@@ -36,18 +36,20 @@
         cursor: pointer;
     }
     .application-name {
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 400;
         color: #23282b;
         line-height: 24px;
     }
+    .application-logo {
+        width: 25px;
+        height: 25px;
+    }
     .application-status {
-        width: 45px;
+        padding: 4px 8px;
         height: 16px;
-        background-color: #f43b3a;
-        color: #fff;
         font-size: 8px;
-        border-radius: 8px;
+        border-radius: 4px;
     }
     .application-validity {
         font-size: 8px;
@@ -57,4 +59,7 @@
         color: #29b6b0;
         cursor: pointer;
     }
+}
+.application-back {
+    cursor: pointer;
 }

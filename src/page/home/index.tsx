@@ -1,15 +1,19 @@
-import { Col, Progress, Row, Button, Table } from 'antd'
+import { Col, Progress, Row, Button, Card, Table } from 'antd'
 import { ChTablePanel, ChUtils } from 'ch-ui'
 import React, { useEffect, useState } from 'react'
 import './index.less'
 import { IMarket, IOpenCoin } from './interface'
+import { GlobalStore } from '../../store/globalStore'
 
 function OpenedCoins() {
     const [openCoins, setOpenCoins] = useState<IOpenCoin[]>()
+    const { currentApp } = GlobalStore.useContainer()
     useEffect(() => {
         ChUtils.Ajax.request({
             url: '/api/get_open_coins',
-            data: {},
+            data: {
+                appid: currentApp?.id,
+            },
             method: 'post',
         }).then((res) => {
             if (res.data) {
@@ -23,8 +27,8 @@ function OpenedCoins() {
             <div className="title1 m-b-10 m-l-5">开通币种</div>
             <Row>
                 <Col className="flex-center" span={8}>
-                    <div className="home-openedCoins-item">
-                        <div className="flex-row-center m-l-20 m-t-10">
+                    <Card hoverable className="home-openedCoins-item">
+                        <div className="flex-row-center">
                             <div className="coin-pic m-r-10"></div>
                             <div>
                                 <div className="coin-name-en">BTC</div>
@@ -53,24 +57,7 @@ function OpenedCoins() {
                             <a>提币</a>
                             <a>归集</a>
                         </div>
-                    </div>
-                </Col>
-                <Col className="flex-center" span={8}>
-                    <div className="home-openedCoins-item"></div>
-                </Col>
-                <Col className="flex-center" span={8}>
-                    <div className="home-openedCoins-item"></div>
-                </Col>
-            </Row>
-            <Row className="m-t-20">
-                <Col className="flex-center" span={8}>
-                    <div className="home-openedCoins-item"></div>
-                </Col>
-                <Col className="flex-center" span={8}>
-                    <div className="home-openedCoins-item"></div>
-                </Col>
-                <Col className="flex-center" span={8}>
-                    <div className="home-openedCoins-item"></div>
+                    </Card>
                 </Col>
             </Row>
         </div>

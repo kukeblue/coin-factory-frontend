@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { ChUtils } from 'ch-ui'
 import { message } from 'antd'
 import qs from 'query-string'
+import { GlobalStore } from './store/globalStore'
 
 const init = () => {
     const Ajax = ChUtils.Ajax

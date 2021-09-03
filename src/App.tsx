@@ -4,6 +4,8 @@ import './index.less'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { routes, needLoginRoutes } from './routes'
+import Home from './page/home'
+import { GlobalStore } from './store/globalStore'
 
 export function App() {
     return (
@@ -22,15 +24,22 @@ export function App() {
                             fallback: <div>loading...</div>,
                         })
                         return (
-                            <Route exact key={item.path} path={item.routerPath}>
+                            <Route exact={false} key={item.path} path={item.routerPath}>
                                 <DOM />
                             </Route>
                         )
                     })}
+                    <Route exact key="home" path="/">
+                        <Home />
+                    </Route>
                 </Switch>
             </Layout>
         </Router>
     )
 }
 
-export default <App />
+export default (
+    <GlobalStore.Provider>
+        <App />
+    </GlobalStore.Provider>
+)
