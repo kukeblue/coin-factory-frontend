@@ -1,7 +1,7 @@
 import React from 'react'
 import { Alert, Menu } from 'antd'
 import constants from '../../../config/constants'
-import { Route, Switch, useHistory } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom'
 import './index.less'
 
 function CommonPage(props: { pageRouters?: { path: string; name: string; component?: JSX.Element; icon?: JSX.Element }[]; pageIcon?: string | JSX.Element; pageName?: string }) {
@@ -40,15 +40,13 @@ function CommonPage(props: { pageRouters?: { path: string; name: string; compone
                     </Menu>
                 </div>
                 <div className="common-page-content">
-                    <Switch>
-                        {commonPageRouters.map((item, index) => {
-                            return (
-                                <Route key={index} exact path={item.path}>
-                                    {item.component || index}
-                                </Route>
-                            )
-                        })}
-                    </Switch>
+                    {commonPageRouters.map((item, index) => {
+                        return (
+                            <Route key={index} exact path={item.path}>
+                                {item.component || index}
+                            </Route>
+                        )
+                    })}
                 </div>
             </div>
         </div>

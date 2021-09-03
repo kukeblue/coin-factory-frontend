@@ -27,7 +27,6 @@ module.exports = {
                 },
             },
         },
-
         disableHostCheck: true,
         contentBase: './dist',
         historyApiFallback: true,
@@ -98,6 +97,7 @@ module.exports = {
         new MiniCssExtractPlugin(),
     ],
     output: {
+        publicPath: '/',
         filename: '[name].bundle.js',
         chunkFilename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),

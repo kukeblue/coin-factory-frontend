@@ -11,21 +11,14 @@ import { GlobalStore } from '../../store/globalStore'
 
 function useApplicationPageStore() {
     const [showAddApplicationModal, setShowAddApplicationModal] = useState(false)
-
-    return {
-        showAddApplicationModal,
-        setShowAddApplicationModal,
-    }
-}
-
-const ApplicationPageStore = createContainer(useApplicationPageStore)
-
-function ApplicationCards() {
     const [apps, setApps] = useState<IApplication[]>()
     const [loading, setLoading] = useState(false)
-    const { setShowAddApplicationModal } = ApplicationPageStore.useContainer()
-    const { setCurrentApp } = GlobalStore.useContainer()
+
     useEffect(() => {
+        fetchApps()
+    }, [])
+
+    const fetchApps = () => {
         ChUtils.Ajax.request({
             url: '/api/get_app_list',
             method: 'post',
@@ -35,7 +28,24 @@ function ApplicationCards() {
                 setApps(res.data)
             }
         })
-    }, [])
+    }
+
+    return {
+        showAddApplicationModal,
+        setShowAddApplicationModal,
+        apps,
+        setApps,
+        loading,
+        setLoading,
+        fetchApps,
+    }
+}
+
+const ApplicationPageStore = createContainer(useApplicationPageStore)
+
+function ApplicationCards() {
+    const { setShowAddApplicationModal, apps, setApps, loading, setLoading } = ApplicationPageStore.useContainer()
+    const { setCurrentApp } = GlobalStore.useContainer()
 
     const statusColor = (status: string) => {
         return status === '已过期' ? '#f43b3a' : status === '即将过期' ? '#f50' : '#87d068'
@@ -112,7 +122,7 @@ function ApplicationCards() {
 }
 
 function AddApplication() {
-    const { showAddApplicationModal, setShowAddApplicationModal } = ApplicationPageStore.useContainer()
+    const { showAddApplicationModal, setShowAddApplicationModal, fetchApps } = ApplicationPageStore.useContainer()
     const [formRef] = useForm()
     return (
         <Modal
@@ -125,16 +135,23 @@ function AddApplication() {
             }}
             onOk={() => {
                 formRef.validateFields().then((res) => {
-                    console.log(res)
+                    const logoSplit = res.logo[0].split('/')
+                    const logo = logoSplit[logoSplit.length - 1]
                     ChUtils.Ajax.request({
                         url: '/api/create_app',
                         method: 'post',
-                        data: res,
+                        data: {
+                            app_name: res.app_name,
+                            logo,
+                        },
                     }).then((res) => {
                         if (res.code === 0) {
-                            message.success(res.msg)
+                            message.success('应用创建成功！')
+                            setShowAddApplicationModal(false)
+                            fetchApps()
+                        } else {
+                            message.error(res.msg)
                         }
-                        message.error(res.msg)
                     })
                 })
             }}

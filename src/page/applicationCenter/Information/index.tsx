@@ -5,8 +5,11 @@ import { GlobalStore } from '../../../store/globalStore'
 import { createContainer } from 'unstated-next'
 import { IAppInfo } from '../interface'
 import { useForm } from 'antd/lib/form/Form'
-import { Switch, Tag, Modal, Button } from 'antd'
+import { Switch, Tag, Modal, Button, message } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import VerificationModal from '../../../component/modal/VerificationModal'
+
 const { confirm } = Modal
 
 function useInformationFormPageStore() {
@@ -38,8 +41,7 @@ function useInformationFormPageStore() {
                 formRef.setFieldsValue(res.data)
             }
         })
-    }, [])
-
+    }, [currentApp, formRef])
     return {
         appInfo,
         formRef,
@@ -50,10 +52,21 @@ const InformationFormPageStore = createContainer(useInformationFormPageStore)
 
 function AppKeyChanger() {
     const { appInfo } = InformationFormPageStore.useContainer()
+    const onCopy = () => {
+        if (appInfo?.appkey) {
+            message.success('复制成功')
+        } else {
+            message.error('appkey未设置')
+            return
+        }
+    }
     return (
         <div className="flex-row-center">
+            <VerificationModal />
             <div>{appInfo?.appkey || '未设置'}</div>
-            <div className="copy-button"></div>
+            <CopyToClipboard text={appInfo?.appkey || ''} onCopy={onCopy}>
+                <div className="copy-button"></div>
+            </CopyToClipboard>
             <div className="information-update">更改</div>
         </div>
     )

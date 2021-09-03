@@ -79,7 +79,7 @@ function LayoutHeader() {
                     </Menu>
                 </div>
                 <div className="flex-center layout-header-right">
-                    <div style={{ fontSize: 8 }} className="layout-header-option m-r-10">
+                    <div style={{ fontSize: 12 }} className="layout-header-option m-r-10">
                         当前应用:<a className="m-l-5">{currentApp?.app_name || '无'}</a>
                     </div>
                     <div className="flex-center layout-header-option m-r-20">

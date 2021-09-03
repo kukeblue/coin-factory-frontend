@@ -6,6 +6,8 @@ import loadable from '@loadable/component'
 import { routes, needLoginRoutes } from './routes'
 import Home from './page/home'
 import { GlobalStore } from './store/globalStore'
+import zhCN from 'antd/lib/locale/zh_CN'
+import { ConfigProvider } from 'antd'
 
 export function App() {
     return (
@@ -24,7 +26,7 @@ export function App() {
                             fallback: <div>loading...</div>,
                         })
                         return (
-                            <Route exact={false} key={item.path} path={item.routerPath}>
+                            <Route key={item.path} path={item.routerPath}>
                                 <DOM />
                             </Route>
                         )
@@ -39,7 +41,9 @@ export function App() {
 }
 
 export default (
-    <GlobalStore.Provider>
-        <App />
-    </GlobalStore.Provider>
+    <ConfigProvider locale={zhCN}>
+        <GlobalStore.Provider>
+            <App />
+        </GlobalStore.Provider>
+    </ConfigProvider>
 )
