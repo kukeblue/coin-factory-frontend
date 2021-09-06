@@ -1,0 +1,21 @@
+.dropRangePicker-label {
+    width: 135px;
+    height: 30px;
+    color: #23282b;
+    position: absolute;
+    left: 0px;
+}
+.dropRangePicker {
+    position: relative;
+    .ant-picker-range {
+        background-color: transparent;
+    }
+    .ant-picker-range .ant-picker-input:first-child {
+        input {
+            padding-left: 135px !important;
+            box-sizing: content-box;
+            background-color: transparent;
+            min-width: 150px;
+        }
+    }
+}

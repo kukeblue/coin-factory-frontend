@@ -8,13 +8,17 @@ import { useForm } from 'antd/lib/form/Form'
 import { Switch, Tag, Modal, Button, message } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import VerificationModal from '../../../component/modal/VerificationModal'
+import Authenticator from '../../../component/auth/Authenticator'
+import { IAuthParams } from '../../../typings'
 
 const { confirm } = Modal
 
 function useInformationFormPageStore() {
     const [formRef] = useForm()
     const [appInfo, setAppInfo] = useState<IAppInfo>()
+    const [modalSetAppKeyShow, setModalSetAppKeyShow] = useState(false)
+    const [showVerificationModal, setShowVerificationModal] = useState(false)
+    const [authParams, setAuthParams] = useState<IAuthParams | undefined>()
     const { currentApp } = GlobalStore.useContainer()
     useEffect(() => {
         if (!currentApp) {
@@ -41,17 +45,35 @@ function useInformationFormPageStore() {
                 formRef.setFieldsValue(res.data)
             }
         })
-    }, [currentApp, formRef])
+    }, [currentApp])
     return {
         appInfo,
         formRef,
+        modalSetAppKeyShow,
+        setModalSetAppKeyShow,
+        authParams,
+        setAuthParams,
     }
 }
 
 const InformationFormPageStore = createContainer(useInformationFormPageStore)
 
+function ModalSetAppKey() {
+    const { setModalSetAppKeyShow, modalSetAppKeyShow } = InformationFormPageStore.useContainer()
+    return (
+        <Modal
+            onCancel={() => {
+                setModalSetAppKeyShow(false)
+            }}
+            visible={modalSetAppKeyShow}
+        >
+            设置appKey成功
+        </Modal>
+    )
+}
+
 function AppKeyChanger() {
-    const { appInfo } = InformationFormPageStore.useContainer()
+    const { appInfo, setAuthParams, setModalSetAppKeyShow } = InformationFormPageStore.useContainer()
     const onCopy = () => {
         if (appInfo?.appkey) {
             message.success('复制成功')
@@ -62,12 +84,17 @@ function AppKeyChanger() {
     }
     return (
         <div className="flex-row-center">
-            <VerificationModal />
             <div>{appInfo?.appkey || '未设置'}</div>
             <CopyToClipboard text={appInfo?.appkey || ''} onCopy={onCopy}>
                 <div className="copy-button"></div>
             </CopyToClipboard>
-            <div className="information-update">更改</div>
+            <Authenticator
+                callback={(v) => {
+                    setModalSetAppKeyShow(true)
+                }}
+            >
+                <div className="information-update">{appInfo?.appkey ? '更改' : '生成'}</div>
+            </Authenticator>
         </div>
     )
 }
@@ -146,6 +173,7 @@ function Information() {
             </div>
             <div className="information-content">
                 <InformationForm />
+                <ModalSetAppKey />
             </div>
         </div>
     )

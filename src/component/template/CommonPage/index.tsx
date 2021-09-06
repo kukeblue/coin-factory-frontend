@@ -1,11 +1,12 @@
 import React from 'react'
 import { Alert, Menu } from 'antd'
 import constants from '../../../config/constants'
-import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, useHistory, useLocation } from 'react-router-dom'
 import './index.less'
 
 function CommonPage(props: { pageRouters?: { path: string; name: string; component?: JSX.Element; icon?: JSX.Element }[]; pageIcon?: string | JSX.Element; pageName?: string }) {
     const history = useHistory()
+    const location = useLocation()
     const commonPageRouters = props.pageRouters || []
     const _pageName = props.pageName || '空白页'
 
@@ -20,7 +21,7 @@ function CommonPage(props: { pageRouters?: { path: string; name: string; compone
                         <div className="side-icon">{props.pageIcon}</div>
                         <div className="side-icon-text">{_pageName}</div>
                     </div>
-                    <Menu className="m-t-80" defaultSelectedKeys={[commonPageRouters[0].path]} mode="inline">
+                    <Menu className="m-t-80" defaultSelectedKeys={[location.pathname]} mode="inline">
                         {commonPageRouters.map((item) => {
                             return (
                                 <Menu.Item

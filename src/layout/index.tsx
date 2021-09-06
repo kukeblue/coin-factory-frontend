@@ -36,14 +36,13 @@ function LayoutHeader() {
     const { headerMenus } = LayoutConfig
     const { currentApp } = GlobalStore.useContainer()
     useEffect(() => {
-        setCurrentPath(location.pathname)
+        setCurrentPath('/' + location.pathname.split('/')[1])
     }, [location.pathname])
 
     const logout = () => {
         localStorage.clear()
         window.location.href = '/login'
     }
-
     return (
         <Header style={{ background: '#23282B' }} className="flex-center">
             <div className="layout-header flex-row-between">
@@ -59,7 +58,7 @@ function LayoutHeader() {
                         <SyncOutlined />
                         <span className="m-l-5">切换应用</span>
                     </div>
-                    <Menu selectedKeys={[currentPath]} theme="dark" className="layout-menu" mode="horizontal">
+                    <Menu defaultSelectedKeys={['/' + location.pathname.split('/')[1]]} selectedKeys={[currentPath]} theme="dark" className="layout-menu" mode="horizontal">
                         {headerMenus.map((item) => {
                             return (
                                 <Menu.Item
@@ -105,11 +104,8 @@ function AdminLayout({ children }: { children: JSX.Element }) {
 }
 
 function MyLayout({ children }: { children: JSX.Element }) {
-    return (
-        <div className="layout">
-            <AdminLayout>{children}</AdminLayout>
-        </div>
-    )
+    const location = useLocation()
+    return <div className="layout">{location.pathname.includes('login') || location.pathname.includes('register') ? <>{children}</> : <AdminLayout>{children}</AdminLayout>}</div>
 }
 
 export default MyLayout

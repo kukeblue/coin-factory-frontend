@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom'
 import { ChUtils } from 'ch-ui'
 import { message } from 'antd'
 import qs from 'query-string'
-import { GlobalStore } from './store/globalStore'
 
 const init = () => {
     const Ajax = ChUtils.Ajax
     Ajax.RequestConfig.onResponse = (data) => {
         if (data.code && data.code === -1) {
             message.error(data.msg)
+            if (data.msg === '登陆超时') {
+                window.location.href = '/login'
+            }
         }
     }
     Ajax.RequestConfig.config = {

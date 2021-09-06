@@ -17,13 +17,3 @@ export interface IMarket {
     PercentChange7d: string
     LastUpdated: string
 }
-// 开通币种
-export interface IOpenCoin {
-    coin_name: string
-    coin_text: string
-    icon: string
-    id: number
-    state: number
-    symbol: string
-    total: number
-}

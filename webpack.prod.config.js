@@ -70,6 +70,7 @@ module.exports = {
         new MiniCssExtractPlugin(),
     ],
     output: {
+        publicPath: '/',
         filename: '[name]-[contenthash:8].bundle.js',
         chunkFilename: '[name]-[contenthash:8].bundle.js',
         path: path.resolve(__dirname, 'dist'),

@@ -12,15 +12,16 @@ import { ConfigProvider } from 'antd'
 export function App() {
     return (
         <Router>
-            {routes.map((item) => {
-                return (
-                    <Route exact key={item.path} path={item.path}>
-                        {item.component}
-                    </Route>
-                )
-            })}
             <Layout>
                 <Switch>
+                    {routes.map((item) => {
+                        return (
+                            <Route exact key={item.path} path={item.path}>
+                                {item.component}
+                            </Route>
+                        )
+                    })}
+
                     {needLoginRoutes.map((item) => {
                         const DOM = loadable(() => import('./page' + item.path), {
                             fallback: <div>loading...</div>,

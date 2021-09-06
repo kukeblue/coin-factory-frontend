@@ -2,13 +2,15 @@ import { Col, Progress, Row, Button, Card, Table } from 'antd'
 import { ChTablePanel, ChUtils } from 'ch-ui'
 import React, { useEffect, useState } from 'react'
 import './index.less'
-import { IMarket, IOpenCoin } from './interface'
+import { IMarket } from './interface'
 import { GlobalStore } from '../../store/globalStore'
+import { IOpenCoin } from '../../typings'
 
 function OpenedCoins() {
     const [openCoins, setOpenCoins] = useState<IOpenCoin[]>()
     const { currentApp } = GlobalStore.useContainer()
     useEffect(() => {
+        if (!currentApp) return
         ChUtils.Ajax.request({
             url: '/api/get_open_coins',
             data: {
@@ -20,7 +22,7 @@ function OpenedCoins() {
                 setOpenCoins(res.data)
             }
         })
-    }, [])
+    }, [currentApp])
 
     return (
         <div className="home-openedCoins">

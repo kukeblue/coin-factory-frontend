@@ -4,9 +4,15 @@ import React, { useState } from 'react'
 import './index.less'
 const { chHooks } = ChUtils
 
-function VerificationCodeInput(props: { onGetCode?: () => Promise<boolean> }): JSX.Element {
+interface VerificationCodeInputProps {
+    onGetCode?: () => Promise<Boolean> | void
+    value?: string
+    onChange?: (v: string) => void
+}
+
+function VerificationCodeInput(props: VerificationCodeInputProps): JSX.Element {
     const [buttonCount, setButtonCount] = useState(0)
-    const [isCountDown, setIsCountDown] = useState<boolean>(false)
+    const [isCountDown, setIsCountDown] = useState<Boolean>(false)
     chHooks.useInterval(
         () => {
             if (buttonCount === 60) {
@@ -22,7 +28,7 @@ function VerificationCodeInput(props: { onGetCode?: () => Promise<boolean> }): J
     const reciprocal = () => {
         if (isCountDown) return
         props.onGetCode &&
-            props.onGetCode().then((res) => {
+            props.onGetCode()?.then((res) => {
                 if (res) {
                     setIsCountDown(true)
                 }
@@ -31,7 +37,13 @@ function VerificationCodeInput(props: { onGetCode?: () => Promise<boolean> }): J
 
     return (
         <div className="flex-center">
-            <Input className="ch-verificationCode-input" placeholder="请输入验证码" />
+            <Input
+                onChange={(e) => {
+                    props.onChange && props.onChange(e.target.value)
+                }}
+                className="ch-verificationCode-input"
+                placeholder="请输入验证码"
+            />
             <Button onClick={reciprocal} type="link" block className="ch-verificationCode-button">
                 {buttonCount ? `${61 - buttonCount}秒后重试` : '获取验证码'}
             </Button>

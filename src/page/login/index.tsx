@@ -5,10 +5,12 @@ import { createContainer, useContainer } from 'unstated-next'
 import { useHistory } from 'react-router-dom'
 import { useForm } from 'antd/lib/form/Form'
 import './index.less'
+import { GlobalStore } from '../../store/globalStore'
 
 function useLoginPageStore() {
     const history = useHistory()
     const [formRef] = useForm()
+    const { fetchUserInfo } = GlobalStore.useContainer()
     const login = (ticket: string, randstr: string) => {
         formRef.validateFields().then((values) => {
             ChUtils.Ajax.request({
@@ -22,6 +24,7 @@ function useLoginPageStore() {
                 },
             }).then((res: { code: number; msg: string; data: any }) => {
                 if (res.code != -1) {
+                    fetchUserInfo()
                     history.push('/')
                 }
             })
