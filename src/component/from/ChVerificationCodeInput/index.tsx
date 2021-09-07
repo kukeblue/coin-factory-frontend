@@ -1,6 +1,6 @@
 import { Input, Button } from 'antd'
 import { ChUtils } from 'ch-ui'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import './index.less'
 const { chHooks } = ChUtils
 
@@ -13,6 +13,8 @@ interface VerificationCodeInputProps {
 function VerificationCodeInput(props: VerificationCodeInputProps): JSX.Element {
     const [buttonCount, setButtonCount] = useState(0)
     const [isCountDown, setIsCountDown] = useState<Boolean>(false)
+    const lock = useRef<Boolean>(false)
+
     chHooks.useInterval(
         () => {
             if (buttonCount === 60) {
@@ -26,13 +28,21 @@ function VerificationCodeInput(props: VerificationCodeInputProps): JSX.Element {
     )
 
     const reciprocal = () => {
+        if (lock.current) return
+        lock.current = true
         if (isCountDown) return
-        props.onGetCode &&
-            props.onGetCode()?.then((res) => {
-                if (res) {
-                    setIsCountDown(true)
-                }
-            })
+        props.onGetCode
+            ? props
+                  .onGetCode()
+                  ?.then((res) => {
+                      if (res) {
+                          setIsCountDown(true)
+                      }
+                  })
+                  .finally(() => {
+                      lock.current = false
+                  })
+            : (lock.current = false)
     }
 
     return (

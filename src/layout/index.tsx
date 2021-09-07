@@ -95,6 +95,10 @@ function LayoutHeader() {
 }
 
 function AdminLayout({ children }: { children: JSX.Element }) {
+    const { fetchUserInfo } = GlobalStore.useContainer()
+    useEffect(() => {
+        fetchUserInfo()
+    }, [])
     return (
         <div className="admin-layout">
             <LayoutHeader />

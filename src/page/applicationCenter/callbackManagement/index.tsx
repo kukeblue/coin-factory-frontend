@@ -154,6 +154,7 @@ function CallbackSettingTable() {
                 },
             }
         },
+        isInitFetch: true,
     })
     const columns = [
         {

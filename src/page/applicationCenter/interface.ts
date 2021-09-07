@@ -6,6 +6,7 @@ export interface IAppInfo {
     id: number
     logo: string
     start_time: number
+    state: number | boolean
 }
 
 export interface ICanOpenCoin {

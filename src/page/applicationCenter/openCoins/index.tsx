@@ -9,6 +9,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import QRCodeViewer from '../../../component/modal/QRCodeViewer'
 import TextArea from 'antd/lib/input/TextArea'
 import Authenticator from '../../../component/auth/Authenticator'
+import { useForm } from 'antd/lib/form/Form'
 
 function useOpenCoinsPageStore() {
     const { currentApp } = GlobalStore.useContainer()
@@ -94,8 +95,10 @@ function ModalImportPrivateKey() {
 }
 
 function ModalWalletSetting() {
-    const { setModalImportPrivateKeyShow, modalWalletSettingShow, coinEditing } = OpenCoinsPageStore.useContainer()
+    const { setModalImportPrivateKeyShow, modalWalletSettingShow, coinEditing, setModalWalletSettingShow } = OpenCoinsPageStore.useContainer()
     const { currentApp } = GlobalStore.useContainer()
+    const [confirmLoading, setConfirmLoading] = useState(false)
+    const [formRef] = useForm()
     useEffect(() => {
         if (coinEditing) {
             ChUtils.Ajax.request({
@@ -107,12 +110,39 @@ function ModalWalletSetting() {
             })
         }
     }, [coinEditing, currentApp])
-
+    const submit = () => {
+        formRef.validateFields().then((values) => {
+            setConfirmLoading(true)
+            ChUtils.Ajax.request({
+                url: '/api/bind_account',
+                data: {
+                    id: coinEditing?.id,
+                    appid: currentApp.id,
+                    ...values,
+                },
+            })
+                .then((res) => {
+                    setModalImportPrivateKeyShow(false)
+                })
+                .finally(() => {
+                    setConfirmLoading(false)
+                })
+        })
+    }
     return (
-        <Modal destroyOnClose visible={modalWalletSettingShow}>
-            <ModalImportPrivateKey />
-            <div className="title-modal m-b-30">冷热钱包设置</div>
+        <Modal
+            title="冷热钱包设置"
+            onCancel={() => {
+                setModalWalletSettingShow(false)
+            }}
+            onOk={submit}
+            confirmLoading={confirmLoading}
+            destroyOnClose
+            visible={modalWalletSettingShow}
+        >
+            <div className="title-modal m-b-30"></div>
             <ChForm
+                form={formRef}
                 layout={{ labelCol: { span: 4 }, wrapperCol: { span: 16, offset: 1 } }}
                 formData={[
                     {
@@ -150,9 +180,10 @@ function ModalWalletSetting() {
                         type: FormItemType.input,
                         label: '冷钱包',
                         name: 'ColdAddr',
+                        rules: [{ required: true, message: '冷钱包不能为空' }],
                     },
                 ]}
-            ></ChForm>
+            />
         </Modal>
     )
 }
@@ -352,6 +383,7 @@ function Page() {
             <OpenedCoinsTable />
             <ModalWalletSetting />
             <ModalCanOpenCoinList />
+            <ModalImportPrivateKey />
         </div>
     )
 }

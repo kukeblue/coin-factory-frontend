@@ -9,6 +9,9 @@ const init = () => {
     Ajax.RequestConfig.onResponse = (data) => {
         if (data.code && data.code === -1) {
             message.error(data.msg)
+        } else if (data.code && data.code === 3) {
+            message.error(data.msg)
+        } else if (data.code && data.code === 1) {
             if (data.msg === '登陆超时') {
                 window.location.href = '/login'
             }

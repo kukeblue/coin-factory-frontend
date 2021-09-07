@@ -1,11 +1,14 @@
 import React from 'react'
-import { UnorderedListOutlined, DollarCircleOutlined, SyncOutlined } from '@ant-design/icons'
+import { UnorderedListOutlined, DollarCircleOutlined, SyncOutlined, GlobalOutlined, FileTextOutlined } from '@ant-design/icons'
 import CommonPage from '../../component/template/CommonPage'
 import './index.less'
 import Information from './Information'
 import OpenCoins from './openCoins'
 import CallbackManagement from './callbackManagement'
 import { GlobalStore } from '../../store/globalStore'
+import HasAppCheck from '../../component/auth/HasAppCheck'
+import ProtectionSetting from './protectionSetting'
+import OperationLog from './operationLog'
 
 function ApplicationCenter() {
     const { currentApp } = GlobalStore.useContainer()
@@ -29,11 +32,25 @@ function ApplicationCenter() {
                   icon: <SyncOutlined />,
                   component: <CallbackManagement />,
               },
+              {
+                  path: '/applicationCenter/protectionSetting',
+                  name: '防护设置',
+                  icon: <GlobalOutlined />,
+                  component: <ProtectionSetting />,
+              },
+              {
+                  path: '/applicationCenter/operationLog',
+                  name: '操作日志',
+                  icon: <FileTextOutlined />,
+                  component: <OperationLog />,
+              },
           ]
         : []
     return (
         <div className="application-page">
-            <CommonPage pageName="应用中心" pageIcon={<div className="applicationCenter-icon"></div>} pageRouters={pageRouters} />
+            <HasAppCheck>
+                <CommonPage pageName="应用中心" pageIcon={<div className="applicationCenter-icon"></div>} pageRouters={pageRouters} />
+            </HasAppCheck>
         </div>
     )
 }

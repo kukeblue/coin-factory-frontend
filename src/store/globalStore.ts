@@ -11,10 +11,6 @@ function useGlobalStore() {
     const [userInfo, setUserInfo] = useState<IUserInfo>(defaultUserInfo)
 
     useEffect(() => {
-        fetchUserInfo()
-    }, [])
-
-    useEffect(() => {
         if (!currentApp) return
         chCache.setObCache('currentApp', currentApp)
     }, [currentApp])

@@ -6,7 +6,7 @@ import './index.less'
 
 interface ChImageUploadProps {
     onChange?: (values: string[]) => void
-    value?: string[]
+    value?: string[] | string
 }
 
 function getBase64(file: RcFile) {
@@ -19,6 +19,7 @@ function getBase64(file: RcFile) {
 }
 
 function ChImageUpload(props: ChImageUploadProps) {
+    const value = typeof props.value == 'string' ? [props.value] : props.value
     const [fileList, setFileList] = useState<UploadFile[]>()
     const [previewVisible, setPreviewVisible] = useState<boolean>(false)
     const [previewImage, setPreviewImage] = useState<string>()
@@ -54,11 +55,10 @@ function ChImageUpload(props: ChImageUploadProps) {
     const handleCancel = () => {
         setPreviewVisible(false)
     }
-
     const list =
         fileList ||
-        (props.value
-            ? props.value.map((item, index) => {
+        (value
+            ? value.map((item, index) => {
                   return {
                       uid: index + '',
                       name: index + 'image.png',
@@ -71,7 +71,7 @@ function ChImageUpload(props: ChImageUploadProps) {
     return (
         <>
             <Upload action="/api/upload" listType="picture-card" fileList={list} onPreview={handlePreview} onChange={handleChange}>
-                {fileList && fileList.length >= 1 ? null : (
+                {(fileList && fileList.length >= 0) || (value && value.length > 0) ? null : (
                     <div>
                         <PlusOutlined />
                         <div style={{ marginTop: 8 }}>Upload</div>
