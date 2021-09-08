@@ -54,7 +54,7 @@ export default function ModalBindGoogleAuth() {
                 <div className="security-qrcode">
                     <QRCode
                         id="qrCode"
-                        value="https://ch-ui.kukechen.top/"
+                        value="https://itunes.apple.com/cn/app/google-authenticator/id388497605?mt=8"
                         size={120} // 二维码的大小
                         fgColor="#000000" // 二维码的颜色
                         style={{ margin: 'auto' }}
@@ -67,7 +67,7 @@ export default function ModalBindGoogleAuth() {
                     <div className="security-qrcode">
                         <QRCode
                             id="qrCode"
-                            value="https://ch-ui.kukechen.top/"
+                            value="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
                             size={120} // 二维码的大小
                             fgColor="#000000" // 二维码的颜色
                             style={{ margin: 'auto' }}

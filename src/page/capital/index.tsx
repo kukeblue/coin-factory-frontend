@@ -56,6 +56,7 @@ function CapitalContent() {
 function Capital() {
     return (
         <CommonPage
+            pageIcon={<div className="applicationCenter-icon"></div>}
             pageName="资金"
             pageRouters={[
                 {

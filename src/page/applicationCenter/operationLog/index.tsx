@@ -1,7 +1,21 @@
 import React from 'react'
 import { Button, Menu, Table } from 'antd'
+import { ChForm, FormItemType } from 'ch-ui'
+import DropRangePicker from '../../../component/from/DropRangePicker'
+import { usePage } from '../../../utils/chHooks'
+import { ICallBackUrlSetting } from '../interface'
+import { AjAxPageCommonSetting } from '../../../config/constants'
 
 function OperationLogTable() {
+    const search = () => {}
+    const { list, total, reload, status } = usePage<ICallBackUrlSetting>({
+        url: '/api/api/get_user_log',
+        pageSize: 10,
+        query: {},
+        onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({}),
+        onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
+        isInitFetch: true,
+    })
     const columns = [
         {
             title: 'ID',
@@ -41,7 +55,35 @@ function OperationLogTable() {
     ]
     return (
         <div className="p-l-40 p-r-40">
-            <Table rowKey="id" dataSource={[]} columns={columns}></Table>
+            <div style={{ height: 50 }} className="m-t-10">
+                <ChForm
+                    formData={[
+                        {
+                            type: FormItemType.other,
+                            name: 'dateRange',
+                            label: '',
+                            dom: <DropRangePicker />,
+                            layout: {
+                                span: 15,
+                            },
+                        },
+                        {
+                            type: FormItemType.other,
+                            name: 'submitButton',
+                            label: '',
+                            dom: (
+                                <div className="flex-row-center m-l-20">
+                                    <Button onClick={search}>筛选</Button>
+                                </div>
+                            ),
+                            layout: {
+                                span: 9,
+                            },
+                        },
+                    ]}
+                />
+            </div>
+            <Table rowKey="id" dataSource={[]} columns={columns} />
         </div>
     )
 }

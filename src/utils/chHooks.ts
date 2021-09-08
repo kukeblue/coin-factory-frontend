@@ -4,11 +4,11 @@ import { ChUtils } from 'ch-ui'
 const Ajax = ChUtils.Ajax
 
 //@type Hook Function 分页Hoos,TS版本
-export interface PageResponse {
+export interface PageResponse<T> {
     status: number
     page: {
         total: number
-        list: any[]
+        list: T[]
         pages: number
     }
 }
@@ -24,7 +24,7 @@ export interface usePageProps {
     query: Object
     onReloadAfter?: (res: any) => void
     onAjaxBefore?: (req: PageRequest) => { url: string; data: any }
-    onAjaxAfter?: (res: any) => PageResponse
+    onAjaxAfter?: <T>(res: any) => PageResponse<T>
     isInitFetch?: boolean
 }
 
@@ -35,11 +35,20 @@ const defaultUsePageProps = {
     isInitFetch: true,
 }
 
-export function usePage(props: usePageProps = defaultUsePageProps) {
+export interface PageRes<T> {
+    status: number
+    page?: {
+        total: number
+        list: T[]
+        pages: number
+    }
+}
+
+export function usePage<T>(props: usePageProps = defaultUsePageProps) {
     const [query, setQuery] = useState<any>(props.query)
     const [status, setStatus] = useState<string>('more')
     const [total, setTotal] = useState<number>(0)
-    const [list, setList] = useState([])
+    const [list, setList] = useState<T[]>([])
 
     const ref = useRef({ pageNo: 1 })
     const reload = useCallback(
@@ -60,21 +69,18 @@ export function usePage(props: usePageProps = defaultUsePageProps) {
             if (props.onAjaxBefore) {
                 requestPrams = props.onAjaxBefore(requestPrams)
             }
-            let resp: any = await Ajax.request(requestPrams)
+            let resp = await Ajax.request(requestPrams)
             if (resp && props.onAjaxAfter) {
                 resp = props.onAjaxAfter(resp)
             }
             console.log('分页PAGE获取成功', query, resp)
-            if (resp.status === 0) {
+            if (resp.status === 0 && resp.page) {
                 setTotal(resp.page.total)
-                let newList
+                let newList: T[]
                 if (pageNo === 1) {
                     newList = resp.page.list
                 } else {
-                    newList = [].concat(
-                        list,
-                        resp.page.list.filter((x: any) => (list.find((y: any) => y.id === x.id) ? false : true))
-                    )
+                    newList = [...list].concat(resp.page.list.filter((x: any) => (list.find((y: any) => y.id === x.id) ? false : true)))
                 }
                 setList(newList)
                 ref.current.pageNo = pageNo + 1

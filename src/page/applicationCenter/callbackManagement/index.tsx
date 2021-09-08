@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Menu, Table, Button, Radio, Modal, Switch } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Menu, Table, Button, Radio, Modal, Switch, Popconfirm } from 'antd'
 import { ChForm, ChUtils, FormItemType } from 'ch-ui'
 import { GlobalStore } from '../../../store/globalStore'
 import { createContainer } from 'unstated-next'
@@ -9,6 +9,8 @@ import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons'
 
 import { useOptionFormListHook2, usePage } from '../../../utils/chHooks'
 import { useForm } from 'antd/es/form/Form'
+import { ICallBackUrlSetting, MCallbackReturnType, MCallbackStyle } from '../interface'
+import { AjAxPageCommonSetting } from '../../../config/constants'
 
 type ManagePageTab = 'callbackSetting' | 'requestLog' | 'callbackLog'
 
@@ -26,6 +28,12 @@ function ModalEditCallbackSetting() {
     const [formFef] = useForm()
     const submit = () => {
         formFef.validateFields().then((values) => {
+            if (values.is_default) {
+                values.is_default = 1
+            } else {
+                values.is_default = 0
+            }
+            console.log(values)
             ChUtils.Ajax.request({
                 url: '/api/insert_callback_url',
                 data: { appid: currentApp.id, ...values },
@@ -55,11 +63,11 @@ function ModalEditCallbackSetting() {
                                 options={[
                                     {
                                         label: '转入',
-                                        value: '1',
+                                        value: 1,
                                     },
                                     {
                                         label: '转出',
-                                        value: '2',
+                                        value: 2,
                                     },
                                 ]}
                             />
@@ -81,9 +89,8 @@ function ModalEditCallbackSetting() {
                     {
                         type: FormItemType.other,
                         label: '状态',
-                        name: 'state',
+                        name: 'is_default',
                         valuePropName: 'checked',
-                        rules: [{ required: true, message: '请选择状态' }],
                         dom: <Switch />,
                     },
                     {
@@ -149,7 +156,7 @@ function CallbackLogTable() {
         },
         isInitFetch: false,
     })
-    const [spread, setSpread] = useState(false)
+    const [spread, setSpread] = useState<boolean>(false)
     const columns = [
         { title: 'ID', dataIndex: 'app_id', key: 'app_id' },
         { title: '应用', dataIndex: 'app_name', key: 'app_name' },
@@ -418,55 +425,87 @@ function RequestLogTable() {
 }
 
 function CallbackSettingTable() {
-    const { setModalEditCallbackSetting } = PageStore.useContainer()
+    const { setModalEditCallbackSetting, modalEditCallbackSetting } = PageStore.useContainer()
     const { currentApp } = GlobalStore.useContainer()
-    const { list } = usePage({
+    const { list, total, reload, status } = usePage<ICallBackUrlSetting>({
         url: '/api/get_callbackurl_page',
         pageSize: 10,
         query: {},
-        onAjaxBefore: (req) => {
-            return {
-                url: req.url,
-                data: {
-                    page: req.data.pageNo,
-                    limit: req.data.pageSize,
-                    appid: currentApp.id,
-                },
-            }
-        },
-        isInitFetch: true,
+        onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({ appid: currentApp.id }),
+        onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
     })
-    console.log('list', list)
+    useEffect(() => {
+        if (!modalEditCallbackSetting) {
+            reload()
+        }
+    }, [modalEditCallbackSetting])
     const columns = [
         {
             title: '应用',
-            dataIndex: '1',
-            key: '1',
+            dataIndex: 'app_name',
+            key: 'app_name',
         },
         {
             title: '类型',
-            dataIndex: '2',
-            key: '2',
+            dataIndex: 'return_type',
+            key: 'return_type',
+            render: (return_type: string) => {
+                return <span>{MCallbackReturnType.get(return_type)}</span>
+            },
         },
         {
             title: '状态',
-            dataIndex: '3',
-            key: '3',
+            dataIndex: 'is_default',
+            key: 'is_default',
+            render: (is_default: string) => {
+                return <Switch checked={is_default == '1'} />
+            },
         },
         {
             title: '方式',
-            dataIndex: '4',
-            key: '4',
+            dataIndex: 'callback_style',
+            key: 'callback_style',
+            render: (callback_style: string) => {
+                return <span>{MCallbackStyle.get(callback_style)}</span>
+            },
         },
         {
             title: '次数',
-            dataIndex: '5',
-            key: '5',
+            dataIndex: 'callback_count',
+            key: 'callback_count',
         },
         {
             title: '地址',
-            dataIndex: '6',
-            key: '6',
+            dataIndex: 'callback_url',
+            key: 'callback_url',
+            width: 150,
+        },
+        {
+            title: '操作',
+            dataIndex: 'option',
+            key: 'option',
+            render: (_: any, ob: ICallBackUrlSetting) => {
+                return (
+                    <Popconfirm
+                        title="是否确认删除?"
+                        onConfirm={() => {
+                            ChUtils.Ajax.request({
+                                url: '/api/del_callbackurl_by_id',
+                                data: {
+                                    id: ob.id,
+                                    appid: currentApp.id,
+                                },
+                            }).then((res) => {
+                                reload()
+                            })
+                        }}
+                    >
+                        <Button type="link" danger>
+                            删除
+                        </Button>
+                    </Popconfirm>
+                )
+            },
         },
     ]
     return (
@@ -477,7 +516,19 @@ function CallbackSettingTable() {
                     添加
                 </Button>
             </div>
-            <Table dataSource={list} columns={columns} />
+            <Table
+                loading={status === 'loading'}
+                rowKey="id"
+                dataSource={list}
+                columns={columns}
+                pagination={{
+                    total,
+                    pageSize: 10,
+                    onChange: (pageNo) => {
+                        reload(pageNo)
+                    },
+                }}
+            />
         </div>
     )
 }

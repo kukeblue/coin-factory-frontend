@@ -29,6 +29,13 @@ export interface IOpenCoin {
     total: number
 }
 
+export interface IPage<T> {
+    limit: number
+    list: T[]
+    page: number
+    total: string | number
+}
+
 // export const defaultUserInfo: IUserInfo = {
 //     current_ip: '',
 //     current_time: new Date().getTime() / 1000,

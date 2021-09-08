@@ -177,9 +177,28 @@ function ModalPayThresholdValueSetting() {
 
 function ModalImportPrivateKey() {
     const [privateKey, setPrivateKey] = useState<string>()
+    const [loadingGetPrivateKey, setLoadingGetPrivateKey] = useState<boolean>(false)
     const { modalImportPrivateKeyShow, setModalImportPrivateKeyShow, coinEditing } = OpenCoinsPageStore.useContainer()
     const { currentApp } = GlobalStore.useContainer()
-
+    const buildSystemPrivateKey = () => {
+        setLoadingGetPrivateKey(true)
+        setPrivateKey('')
+        ChUtils.Ajax.request({
+            url: '/api/get_pub_addr',
+            data: {
+                appid: currentApp.id,
+                id: coinEditing?.id,
+            },
+        })
+            .then((res) => {
+                if (res.code === 0) {
+                    setPrivateKey(res.data)
+                }
+            })
+            .finally(() => {
+                setLoadingGetPrivateKey(false)
+            })
+    }
     const doImportPrivateKey = () => {
         if (privateKey && privateKey !== '') {
             ChUtils.Ajax.request({
@@ -189,41 +208,59 @@ function ModalImportPrivateKey() {
                     appid: currentApp.id,
                     id: coinEditing!.id,
                 },
+            }).then((res) => {
+                if (res.code === 0) {
+                    setModalImportPrivateKeyShow(false)
+                    notification.success({ message: '导入私钥成功' })
+                }
             })
         } else {
-            message.error('密钥不能为空')
+            message.error('私钥不能为空')
         }
     }
 
     return (
-        <Modal onOk={doImportPrivateKey} onCancel={() => setModalImportPrivateKeyShow(false)} destroyOnClose visible={modalImportPrivateKeyShow}>
+        <Modal maskClosable={false} onOk={doImportPrivateKey} onCancel={() => setModalImportPrivateKeyShow(false)} destroyOnClose visible={modalImportPrivateKeyShow}>
             <div className="title-modal m-b-30">导入私钥</div>
             <TextArea
+                value={privateKey}
+                className="m-b-15"
                 onChange={(e) => {
                     setPrivateKey(e.target.value)
                 }}
-                rows={10}
-            ></TextArea>
+                rows={3}
+            />
+            <Button loading={loadingGetPrivateKey} type="link" onClick={buildSystemPrivateKey}>
+                系统生成
+            </Button>
         </Modal>
     )
 }
 
 function ModalWalletSetting() {
     const { setModalImportPrivateKeyShow, modalWalletSettingShow, coinEditing, setModalWalletSettingShow } = OpenCoinsPageStore.useContainer()
+    const [currentPrivateKey, setCurrentPrivateKey] = useState<string>()
     const { currentApp } = GlobalStore.useContainer()
     const [confirmLoading, setConfirmLoading] = useState(false)
     const [formRef] = useForm()
-    // useEffect(() => {
-    //     if (coinEditing) {
-    //         ChUtils.Ajax.request({
-    //             url: '/api/export_pri',
-    //             data: {
-    //                 symbol: coinEditing?.symbol,
-    //                 appid: currentApp.id,
-    //             },
-    //         })
-    //     }
-    // }, [coinEditing, currentApp])
+    useEffect(() => {
+        if (!modalWalletSettingShow) return
+        if (coinEditing) {
+            ChUtils.Ajax.request({
+                url: '/api/export_pri',
+                data: {
+                    symbol: coinEditing?.symbol,
+                    appid: currentApp.id,
+                },
+            }).then((res) => {
+                if (res.code == 0) {
+                    setCurrentPrivateKey(res.data)
+                } else {
+                    setCurrentPrivateKey(undefined)
+                }
+            })
+        }
+    }, [coinEditing, modalWalletSettingShow])
     const submit = () => {
         formRef.validateFields().then((values) => {
             setConfirmLoading(true)
@@ -236,7 +273,8 @@ function ModalWalletSetting() {
                 },
             })
                 .then((res) => {
-                    setModalImportPrivateKeyShow(false)
+                    setModalWalletSettingShow(false)
+                    notification.success({ message: '冷热钱包设置成功' })
                 })
                 .finally(() => {
                     setConfirmLoading(false)
@@ -245,6 +283,7 @@ function ModalWalletSetting() {
     }
     return (
         <Modal
+            maskClosable={false}
             title="冷热钱包设置"
             onCancel={() => {
                 setModalWalletSettingShow(false)
@@ -266,27 +305,51 @@ function ModalWalletSetting() {
                         dom: (
                             <div>
                                 <div className="flex-row-center">
-                                    <div>热钱包.....</div>
                                     <div>
-                                        <CopyToClipboard
-                                            text={'热钱包'}
-                                            onCopy={() => {
-                                                message.success('复制成功')
-                                            }}
-                                        >
-                                            <div className="copy-button"></div>
-                                        </CopyToClipboard>
+                                        {currentPrivateKey ? (
+                                            <CopyToClipboard
+                                                text={currentPrivateKey}
+                                                onCopy={() => {
+                                                    message.success('私钥复制成功')
+                                                }}
+                                            >
+                                                <Tag className="m-r-20">复制私钥</Tag>
+                                            </CopyToClipboard>
+                                        ) : (
+                                            <span
+                                                onClick={() => {
+                                                    setModalImportPrivateKeyShow(true)
+                                                }}
+                                                className="m-r-30 text-link"
+                                            >
+                                                导入私钥
+                                            </span>
+                                        )}
                                     </div>
-                                    <div style={{ position: 'relative', left: '-10px' }}>
-                                        <QRCodeViewer />
-                                    </div>
-                                    <div>
-                                        <a onClick={() => setModalImportPrivateKeyShow(true)}>导入私钥</a>
-                                    </div>
+                                    {/*<div>*/}
+                                    {/*    <CopyToClipboard*/}
+                                    {/*        text={currentPrivateKey}*/}
+                                    {/*        onCopy={() => {*/}
+                                    {/*            message.success('私钥复制成功')*/}
+                                    {/*        }}*/}
+                                    {/*    >*/}
+                                    {/*        <div className="copy-button"></div>*/}
+                                    {/*    </CopyToClipboard>*/}
+                                    {/*</div>*/}
+                                    {currentPrivateKey && (
+                                        <div style={{ position: 'relative', left: '-10px' }}>
+                                            <QRCodeViewer />
+                                        </div>
+                                    )}
+                                    {currentPrivateKey && (
+                                        <div>
+                                            <a onClick={() => setModalImportPrivateKeyShow(true)}>导入私钥</a>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="m-t-10">
-                                    <a>导出热钱包私钥</a>
-                                </div>
+                                {/*<div className="m-t-10">*/}
+                                {/*    <a>导出热钱包私钥</a>*/}
+                                {/*</div>*/}
                             </div>
                         ),
                     },
@@ -416,6 +479,7 @@ function Header() {
 
 function OpenedCoinsTable() {
     const { setModalDeleteAppCoin, setModalPayThresholdValueSetting, coins, setCoinEditing, setModalWalletSettingShow, coinsTableLoading } = OpenCoinsPageStore.useContainer()
+    const { currentApp } = GlobalStore.useContainer()
 
     const columns = [
         {
@@ -440,7 +504,21 @@ function OpenedCoinsTable() {
             title: '状态',
             dataIndex: 'state',
             key: 'state',
-            render: (state: number) => <Switch checked={state !== 0} />,
+            render: (state: number, ob: IOpenCoin) => (
+                <Switch
+                    onChange={(checked) => {
+                        ChUtils.Ajax.request({
+                            url: '/api/set_app_state',
+                            data: { id: ob.id, appid: currentApp.id, state: checked ? 1 : 0 },
+                        }).then((res) => {
+                            if (res.code === 0) {
+                                notification.success({ message: '修改状态成功' })
+                            }
+                        })
+                    }}
+                    defaultChecked={state !== 0}
+                />
+            ),
         },
         {
             title: '操作',
@@ -461,7 +539,7 @@ function OpenedCoinsTable() {
                                             }}
                                         >
                                             <a className="coin-option-item" target="_blank">
-                                                冷热钱包设置
+                                                <div>冷热钱包设置</div>
                                             </a>
                                         </Authenticator>
                                     </Menu.Item>
@@ -473,13 +551,13 @@ function OpenedCoinsTable() {
                                             }}
                                         >
                                             <a className="coin-option-item" target="_blank">
-                                                充值归集设置
+                                                <div>充值归集设置</div>
                                             </a>
                                         </Authenticator>
                                     </Menu.Item>
-                                    <Menu.Item key="3">
-                                        <a target="_blank">手续费设置</a>
-                                    </Menu.Item>
+                                    {/*<Menu.Item key="3">*/}
+                                    {/*    <a target="_blank">手续费设置</a>*/}
+                                    {/*</Menu.Item>*/}
                                     <Menu.Item danger key="4">
                                         <Authenticator
                                             callback={() => {
