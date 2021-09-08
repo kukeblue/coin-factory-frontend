@@ -12,6 +12,9 @@ import Authenticator from '../../../component/auth/Authenticator'
 import { IAuthParams } from '../../../typings'
 import AjaxBuilderInput from '../../../component/from/AjaxBuilderInput'
 import ChImageUpload from '../../../component/from/ChImageUpload'
+import { notification } from 'antd/es'
+import { CopyOutlined } from '@ant-design/icons'
+import { getImageNameFromUrl } from '../../../utils/format'
 
 const { confirm } = Modal
 
@@ -36,7 +39,6 @@ function useInformationFormPageStore() {
         }).then((res) => {
             if (res.code === 0 && res.data) {
                 setAppInfo(res.data)
-                formRef.setFieldsValue(res.data)
             }
         })
     }
@@ -150,6 +152,10 @@ function ModalSetAppSecret() {
     const submit = () => {
         if (!currentApp) return
         formRef.validateFields().then((res) => {
+            if (!res.appsercet || res.appsercet === '') {
+                message.error('App Secret不能为空')
+                return
+            }
             ChUtils.Ajax.request({
                 url: '/api/set_sercet',
                 data: {
@@ -158,6 +164,7 @@ function ModalSetAppSecret() {
                 },
             }).then((res1) => {
                 if (res1.code === 0) {
+                    notification.success({ message: 'App Secret 更新成功' })
                     getAppInfo()
                     setModalSetAppSecretShow(false)
                 }
@@ -240,14 +247,37 @@ function AppSecretChanger() {
             if (res.code === 0 && res.data === '') {
                 Modal.success({
                     okText: '关闭',
-                    content: '请点击左边刷新生成AppSecret',
+                    content: (
+                        <GlobalStore.Provider>
+                            <div className="flex-row-center">
+                                AppSecret为空,请点击
+                                <Authenticator
+                                    callback={() => {
+                                        Modal.destroyAll()
+                                        setModalSetAppSecretShow(true)
+                                    }}
+                                >
+                                    <div style={{ textDecoration: 'underline' }} className="information-update">
+                                        生成
+                                    </div>
+                                </Authenticator>
+                            </div>
+                        </GlobalStore.Provider>
+                    ),
                     icon: false,
                 })
             }
             if (res.code === 0 && res.data !== '') {
                 Modal.success({
                     okText: '关闭',
-                    content: res.data,
+                    content: (
+                        <div>
+                            <span className="m-r-10">{res.data}</span>
+                            <CopyToClipboard text={res.data} onCopy={() => message.success('拷贝成功')}>
+                                <CopyOutlined />
+                            </CopyToClipboard>
+                        </div>
+                    ),
                     icon: false,
                 })
             }
@@ -263,7 +293,7 @@ function AppSecretChanger() {
                     setModalSetAppSecretShow(true)
                 }}
             >
-                <div className="information-update m-l-20">刷新</div>
+                <div className="information-update m-l-20">更改</div>
             </Authenticator>
         </div>
     )
@@ -275,12 +305,25 @@ function InformationForm() {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
+        if (!appInfo) return
         if (appInfo && appInfo.state === 0) {
             appInfo!.state = false
         } else if (appInfo && appInfo.state === 1) {
             appInfo!.state = true
         }
-        formRef.setFieldsValue(appInfo)
+        formRef.setFieldsValue({
+            ...appInfo,
+            logo: appInfo?.logo
+                ? [
+                      {
+                          uid: -1,
+                          name: '',
+                          status: 'done',
+                          url: appInfo?.logo,
+                      },
+                  ]
+                : [],
+        })
     }, [appInfo])
 
     const submit = () => {
@@ -291,14 +334,19 @@ function InformationForm() {
             } else if (values && values.state) {
                 values!.state = 1
             }
-            values.id = appInfo!.id
             ChUtils.Ajax.request({
                 url: '/api/set_app',
-                data: values,
+                data: {
+                    appname: values.app_name,
+                    state: values.state,
+                    logo: values.logo[0].response && values.logo[0].response.data.File ? values.logo[0].response.data.File : appInfo?.logo ? getImageNameFromUrl(appInfo.logo) : undefined,
+                    allowsip: values.allows_ip,
+                    appid: appInfo!.id,
+                },
             })
                 .then((res) => {
                     if (res.code === 0) {
-                        message.success('保存成功')
+                        notification.success({ message: '保存成功' })
                     }
                 })
                 .finally(() => {
@@ -333,19 +381,19 @@ function InformationForm() {
                         label: '应用名称',
                         rules: [{ required: true, message: '请输入应用名称' }],
                     },
-                    // {
-                    //     type: FormItemType.other,
-                    //     name: 'logo',
-                    //     label: 'Logo',
-                    //     dom: <ChImageUpload />,
-                    // },
                     {
                         type: FormItemType.other,
-                        name: 'state',
-                        label: '是否开启',
-                        valuePropName: 'checked',
-                        dom: <Switch />,
+                        name: 'logo',
+                        label: 'Logo',
+                        dom: <ChImageUpload />,
                     },
+                    // {
+                    //     type: FormItemType.other,
+                    //     name: 'state',
+                    //     label: '是否开启',
+                    //     valuePropName: 'checked',
+                    //     dom: <Switch />,
+                    // },
                     {
                         type: FormItemType.other,
                         name: 'allows_ip',
@@ -354,8 +402,8 @@ function InformationForm() {
                     },
                 ]}
             />
-            <div onClick={submit} className="m-t-50" style={{ marginLeft: 165 }}>
-                <Button loading={loading} type="primary">
+            <div className="m-t-50" style={{ marginLeft: 165 }}>
+                <Button onClick={submit} loading={loading} type="primary">
                     保存设置
                 </Button>
             </div>

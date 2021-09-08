@@ -10,6 +10,9 @@ import QRCodeViewer from '../../../component/modal/QRCodeViewer'
 import TextArea from 'antd/lib/input/TextArea'
 import Authenticator from '../../../component/auth/Authenticator'
 import { useForm } from 'antd/lib/form/Form'
+import CoinTemplate from '../../../component/template/CoinTemplate'
+import { util } from 'prettier'
+import { notification } from 'antd/es'
 
 function useOpenCoinsPageStore() {
     const { currentApp } = GlobalStore.useContainer()
@@ -19,6 +22,8 @@ function useOpenCoinsPageStore() {
     const [coinsTableLoading, setCoinsTableLoading] = useState(false)
     const [modalImportPrivateKeyShow, setModalImportPrivateKeyShow] = useState(false)
     const [modalWalletSettingShow, setModalWalletSettingShow] = useState(false)
+    const [modalPayThresholdValueSetting, setModalPayThresholdValueSetting] = useState(false)
+    const [modalDeleteAppCoin, setModalDeleteAppCoin] = useState(false)
 
     const fetchCoins = useCallback(() => {
         setCoinsTableLoading(true)
@@ -56,10 +61,119 @@ function useOpenCoinsPageStore() {
         modalImportPrivateKeyShow,
         setModalImportPrivateKeyShow,
         coinsTableLoading,
+        modalPayThresholdValueSetting,
+        setModalPayThresholdValueSetting,
+        modalDeleteAppCoin,
+        setModalDeleteAppCoin,
     }
 }
 
 const OpenCoinsPageStore = createContainer(useOpenCoinsPageStore)
+
+function ModalDeleteAppCoin() {
+    const { modalDeleteAppCoin, setModalDeleteAppCoin, coinEditing, fetchCoins } = OpenCoinsPageStore.useContainer()
+    const { currentApp } = GlobalStore.useContainer()
+    return (
+        <Modal
+            onCancel={() => {
+                setModalDeleteAppCoin(false)
+            }}
+            onOk={() => {
+                ChUtils.Ajax.request({
+                    url: '/api/del_coins',
+                    data: {
+                        id: coinEditing?.id,
+                        appid: currentApp.id,
+                    },
+                }).then((res) => {
+                    if (res.code === 0) {
+                        notification.success({ message: '删除成功' })
+                        fetchCoins()
+                        setModalDeleteAppCoin(false)
+                    }
+                })
+            }}
+            okButtonProps={{ danger: true }}
+            title="删除应用"
+            visible={modalDeleteAppCoin}
+        >
+            应用删除后，数据不可恢复，确认删应用？
+        </Modal>
+    )
+}
+// 充值归集弹框
+function ModalPayThresholdValueSetting() {
+    const { setModalPayThresholdValueSetting, modalPayThresholdValueSetting, coinEditing } = OpenCoinsPageStore.useContainer()
+    const { currentApp } = GlobalStore.useContainer()
+    const [formRef] = useForm()
+
+    useEffect(() => {
+        if (modalPayThresholdValueSetting) {
+            formRef.resetFields()
+        }
+    }, [modalPayThresholdValueSetting])
+
+    const submit = () => {
+        formRef.validateFields().then((values) => {
+            ChUtils.Ajax.request({
+                url: '/api/set_limit',
+                data: {
+                    ...values,
+                    appid: currentApp.id,
+                    id: coinEditing?.id,
+                },
+            }).then((res) => {
+                if (res.code == 0) {
+                    setModalPayThresholdValueSetting(false)
+                    notification.success({ message: '保存成功' })
+                }
+            })
+        })
+    }
+    return (
+        <Modal
+            destroyOnClose={true}
+            title="充值归集设置"
+            onCancel={() => {
+                setModalPayThresholdValueSetting(false)
+            }}
+            onOk={submit}
+            visible={modalPayThresholdValueSetting}
+        >
+            <ChForm
+                form={formRef}
+                layout={{
+                    labelCol: { span: 6 },
+                    wrapperCol: { span: 16 },
+                }}
+                formData={[
+                    {
+                        type: FormItemType.input,
+                        label: '充值监控上限',
+                        name: 'recharge_upper_limit',
+                        rules: [
+                            {
+                                required: true,
+                                message: '请输入充值监控上限',
+                            },
+                        ],
+                    },
+                    {
+                        type: FormItemType.input,
+                        label: '归集数量下限',
+                        name: 'together_upper_limit',
+                        rules: [
+                            {
+                                required: true,
+                                message: '请输入归集数量下限',
+                            },
+                        ],
+                    },
+                ]}
+            />
+        </Modal>
+    )
+}
 
 function ModalImportPrivateKey() {
     const [privateKey, setPrivateKey] = useState<string>()
@@ -99,17 +213,17 @@ function ModalWalletSetting() {
     const { currentApp } = GlobalStore.useContainer()
     const [confirmLoading, setConfirmLoading] = useState(false)
     const [formRef] = useForm()
-    useEffect(() => {
-        if (coinEditing) {
-            ChUtils.Ajax.request({
-                url: '/api/export_pri',
-                data: {
-                    symbol: coinEditing?.symbol,
-                    appid: currentApp.id,
-                },
-            })
-        }
-    }, [coinEditing, currentApp])
+    // useEffect(() => {
+    //     if (coinEditing) {
+    //         ChUtils.Ajax.request({
+    //             url: '/api/export_pri',
+    //             data: {
+    //                 symbol: coinEditing?.symbol,
+    //                 appid: currentApp.id,
+    //             },
+    //         })
+    //     }
+    // }, [coinEditing, currentApp])
     const submit = () => {
         formRef.validateFields().then((values) => {
             setConfirmLoading(true)
@@ -213,7 +327,7 @@ function ModalCanOpenCoinList() {
         ChUtils.Ajax.request({
             url: '/api/open_coins',
             data: {
-                symbols: selectedRowKeys,
+                symbols: selectedRowKeys?.toString(),
                 appid: currentApp.id,
             },
         }).then((res) => {
@@ -265,7 +379,7 @@ function ModalCanOpenCoinList() {
                                 <div className="flex-row-center">
                                     {item.icon ? <img src={item.icon} className="coin-pic m-r-10"></img> : <div className="coin-pic m-r-10"></div>}
                                     <div>
-                                        <div className="coin-name-en">{item.symbol}</div>
+                                        <div className="coin-name-en">{item.coin_name}</div>
                                         <div className="coin-name">{item.coin_text}</div>
                                     </div>
                                 </div>
@@ -273,7 +387,7 @@ function ModalCanOpenCoinList() {
                         },
                     },
                 ]}
-            ></Table>
+            />
         </Modal>
     )
 }
@@ -301,13 +415,16 @@ function Header() {
 }
 
 function OpenedCoinsTable() {
-    const { canOpenCoinListModal, coins, setCoinEditing, setModalWalletSettingShow, coinsTableLoading } = OpenCoinsPageStore.useContainer()
+    const { setModalDeleteAppCoin, setModalPayThresholdValueSetting, coins, setCoinEditing, setModalWalletSettingShow, coinsTableLoading } = OpenCoinsPageStore.useContainer()
 
     const columns = [
         {
             title: '币种',
             dataIndex: 'coin_name',
             key: 'coin_name',
+            render: (_: string, coin: IOpenCoin) => {
+                return <CoinTemplate icon={coin.icon} name={coin.coin_name} dec={coin.coin_text} />
+            },
         },
         {
             title: '简称',
@@ -323,7 +440,7 @@ function OpenedCoinsTable() {
             title: '状态',
             dataIndex: 'state',
             key: 'state',
-            render: (state: number) => <Switch checked={state != 0}></Switch>,
+            render: (state: number) => <Switch checked={state !== 0} />,
         },
         {
             title: '操作',
@@ -349,15 +466,29 @@ function OpenedCoinsTable() {
                                         </Authenticator>
                                     </Menu.Item>
                                     <Menu.Item key="2">
-                                        <a className="coin-option-item" target="_blank">
-                                            充值归集设置
-                                        </a>
+                                        <Authenticator
+                                            callback={() => {
+                                                setCoinEditing(item)
+                                                setModalPayThresholdValueSetting(true)
+                                            }}
+                                        >
+                                            <a className="coin-option-item" target="_blank">
+                                                充值归集设置
+                                            </a>
+                                        </Authenticator>
                                     </Menu.Item>
                                     <Menu.Item key="3">
                                         <a target="_blank">手续费设置</a>
                                     </Menu.Item>
                                     <Menu.Item danger key="4">
-                                        <a target="_blank">删除</a>
+                                        <Authenticator
+                                            callback={() => {
+                                                setCoinEditing(item)
+                                                setModalDeleteAppCoin(true)
+                                            }}
+                                        >
+                                            <div>删除</div>
+                                        </Authenticator>
                                     </Menu.Item>
                                 </Menu>
                             }
@@ -384,6 +515,8 @@ function Page() {
             <ModalWalletSetting />
             <ModalCanOpenCoinList />
             <ModalImportPrivateKey />
+            <ModalPayThresholdValueSetting />
+            <ModalDeleteAppCoin />
         </div>
     )
 }

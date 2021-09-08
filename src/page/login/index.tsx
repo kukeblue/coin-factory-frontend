@@ -1,5 +1,5 @@
 import { Button } from 'antd'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { ChForm, ChUtils, FormItemType } from 'ch-ui'
 import { createContainer, useContainer } from 'unstated-next'
 import { useHistory } from 'react-router-dom'
@@ -46,18 +46,26 @@ const LoginPageStore = createContainer(useLoginPageStore)
 function LoginCard() {
     const { login, toRegister, formRef } = useContainer(LoginPageStore)
 
-    useEffect(() => {
-        // @ts-ignore
-        window.loginVerifyCallBack = function (res) {
-            console.log('callback:', res)
-            // res（用户主动关闭验证码）= {ret: 2, ticket: null}
-            // res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
-            if (res.ret === 0) {
-                // 蒙蔽接口反了
-                login(res.ticket, res.randstr)
-            }
+    const loginVerifyCallBack = (res: any) => {
+        console.log('callback:', res)
+        // res（用户主动关闭验证码）= {ret: 2, ticket: null}
+        // res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
+        if (res.ret === 0) {
+            // 蒙蔽接口反了
+            login(res.ticket, res.randstr)
         }
-    }, [])
+    }
+
+    const submit = () => {
+        formRef.validateFields().then((res) => {
+            try {
+                const captcha1 = new TencentCaptcha('2006315435', loginVerifyCallBack)
+                captcha1.show() // 显示验证码
+            } catch (error) {
+                // loadErrorCallback()
+            }
+        })
+    }
 
     return (
         <div className="login-card flex-column-center m-b-60">
@@ -71,17 +79,18 @@ function LoginCard() {
                         name: 'username',
                         label: '',
                         placeholder: '账号',
+                        rules: [{ required: true, message: '账号不能为空' }],
                     },
                     {
-                        type: FormItemType.input,
-                        inputtype: 'password',
+                        type: FormItemType.password,
                         name: 'password',
                         label: '',
                         placeholder: '密码',
+                        rules: [{ required: true, message: '密码不能为空' }],
                     },
                 ]}
             />
-            <Button id="TencentCaptcha" data-appid="2006315435" data-cbfn="loginVerifyCallBack" data-biz-state="data-biz-state" type="primary" className="login-button">
+            <Button onClick={submit} type="primary" className="login-button">
                 登录
             </Button>
             <div className="flex-between m-t-10 m-b-30" style={{ width: '100%' }}>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { AppstoreOutlined, LeftOutlined, PoweroffOutlined } from '@ant-design/icons'
 import './index.less'
-import { Card, Col, message, Modal, Row, Tag, Button, Spin } from 'antd'
+import { Card, Col, message, Modal, Row, Tag, Button, Spin, notification } from 'antd'
 import { ChForm, ChUtils, FormItemType } from 'ch-ui'
 import { useHistory } from 'react-router-dom'
 import ChImageUpload from '../../component/from/ChImageUpload'
@@ -102,7 +102,7 @@ function ApplicationCards() {
                                                 setTimeout(() => {
                                                     setLoading(false)
                                                     setCurrentApp(app)
-                                                    message.success('切换应用成功')
+                                                    notification.success({ message: '切换应用成功' })
                                                 }, 1000)
                                             }}
                                             size="small"
@@ -135,14 +135,12 @@ function AddApplication() {
             }}
             onOk={() => {
                 formRef.validateFields().then((res) => {
-                    const logoSplit = res.logo[0].split('/')
-                    const logo = logoSplit[logoSplit.length - 1]
                     ChUtils.Ajax.request({
                         url: '/api/create_app',
                         method: 'post',
                         data: {
                             app_name: res.app_name,
-                            logo,
+                            logo: res.logo[0].response && res.logo[0].response.data.File ? res.logo[0].response.data.File : '',
                         },
                     }).then((res) => {
                         if (res.code === 0) {
@@ -171,6 +169,7 @@ function AddApplication() {
                         type: FormItemType.other,
                         name: 'logo',
                         label: '应用Logo',
+                        initialValue: [],
                         dom: <ChImageUpload />,
                         rules: [{ required: true, message: '应用logo不能为空' }],
                     },

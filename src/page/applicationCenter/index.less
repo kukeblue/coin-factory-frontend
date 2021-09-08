@@ -30,6 +30,12 @@
 .applicationCenter-callbackManagement {
     .search-bar {
         position: relative;
+        height: 50px;
+        transition: all 0.3s linear;
+        will-change: height;
+    }
+    .search-bar_spread {
+        height: 110px;
     }
     .search-options {
         position: absolute;
@@ -47,5 +53,6 @@
 }
 .applicationCenter-common-header {
     padding: 40px;
+    padding-bottom: 10px;
     position: relative;
 }

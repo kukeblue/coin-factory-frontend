@@ -6,7 +6,7 @@ import './index.less'
 export default function PSelect(props: SelectProps<any>) {
     return (
         <div style={props.style} className="pSelect flex-row-center">
-            <Select {...props} placeholder="选择币种类型"></Select>
+            <Select {...props}></Select>
             <CaretDownOutlined className="pSelect-icon" />
         </div>
     )

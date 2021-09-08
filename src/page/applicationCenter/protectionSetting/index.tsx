@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Dropdown, Menu, Table } from 'antd'
+import { Button, Menu, Table } from 'antd'
 
 function SettingTable() {
     const columns = [
@@ -46,6 +46,11 @@ function SettingTable() {
     ]
     return (
         <div className="p-l-40 p-r-40">
+            <div className="m-t-20 m-b-20 button-add-1">
+                <Button style={{ width: 80 }} type="primary">
+                    添加
+                </Button>
+            </div>
             <Table rowKey="id" dataSource={[]} columns={columns}></Table>
         </div>
     )
@@ -59,9 +64,6 @@ function Header() {
                     <Menu.Item key="1">防护设置</Menu.Item>
                 </Menu>
             </div>
-            <Button type="primary" className="header-button">
-                添加
-            </Button>
         </div>
     )
 }
@@ -70,6 +72,7 @@ function ProtectionSetting() {
     return (
         <div className="applicationCenter-protectionSetting">
             <Header></Header>
+
             <SettingTable />
         </div>
     )
