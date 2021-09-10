@@ -9,12 +9,12 @@ import { AjAxPageCommonSetting } from '../../../config/constants'
 function OperationLogTable() {
     const search = () => {}
     const { list, total, reload, status } = usePage<ICallBackUrlSetting>({
-        url: '/api/api/get_user_log',
+        url: '/api/get_user_log',
         pageSize: 10,
         query: {},
         onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({}),
         onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
-        isInitFetch: true,
+        isInitFetch: false,
     })
     const columns = [
         {

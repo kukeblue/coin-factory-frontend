@@ -30,6 +30,37 @@ export interface ICallBackUrlSetting {
     update_at: string
 }
 
+export interface IRequestLog {
+    app_id: string
+    app_name: string
+    create_at: string
+    id: string
+    method: string
+    request_at: string
+    request_ip: string
+    request_param: string
+    response_at: string
+    response_data: string
+    symbol: string
+    type: string
+}
+
+export interface ICallBackLog {
+    app_id: string
+    app_name: string
+    code: string
+    err: string
+    id: string
+    nid: string
+    request_param: string
+    response_param: string
+    return_time: string
+    return_url: string
+    sign: string
+    symbol: string
+    type: string
+}
+
 export const MCallbackReturnType = new Map([
     ['1', '转入'],
     ['2', '转出'],
@@ -39,4 +70,10 @@ export const MCallbackStyle = new Map([
     ['1', 'www-form-data'],
     ['2', 'json'],
     ['3', 'xml'],
+])
+
+export const MCallMethodType = new Map([
+    ['1', 'GET'],
+    ['2', 'POST'],
+    ['3', '请求地址'],
 ])

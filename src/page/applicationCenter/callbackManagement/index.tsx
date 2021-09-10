@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Menu, Table, Button, Radio, Modal, Switch, Popconfirm } from 'antd'
+import { Menu, Table, Button, Radio, Modal, Switch, Popconfirm, notification, message } from 'antd'
 import { ChForm, ChUtils, FormItemType } from 'ch-ui'
 import { GlobalStore } from '../../../store/globalStore'
 import { createContainer } from 'unstated-next'
@@ -9,8 +9,9 @@ import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons'
 
 import { useOptionFormListHook2, usePage } from '../../../utils/chHooks'
 import { useForm } from 'antd/es/form/Form'
-import { ICallBackUrlSetting, MCallbackReturnType, MCallbackStyle } from '../interface'
+import { ICallBackLog, ICallBackUrlSetting, IRequestLog, MCallbackReturnType, MCallbackStyle, MCallMethodType } from '../interface'
 import { AjAxPageCommonSetting } from '../../../config/constants'
+import { ColumnsType } from 'antd/lib/table/interface'
 
 type ManagePageTab = 'callbackSetting' | 'requestLog' | 'callbackLog'
 
@@ -140,53 +141,70 @@ function CallbackLogTable() {
             return { status: res.code, list: res.data }
         },
     })
-    const { reload } = usePage({
+    const { reload, list, total, status } = usePage<ICallBackLog>({
         url: '/api/get_callback_log',
         pageSize: 10,
         query: {},
-        onAjaxBefore: (req) => {
-            return {
-                url: req.url,
-                data: {
-                    page: req.data.pageNo,
-                    limit: req.data.pageSize,
-                    appid: currentApp.id,
-                },
-            }
-        },
-        isInitFetch: false,
+        onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({ appid: currentApp.id }),
+        onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
+        isInitFetch: true,
     })
+    const [formRef] = useForm()
     const [spread, setSpread] = useState<boolean>(false)
-    const columns = [
-        { title: 'ID', dataIndex: 'app_id', key: 'app_id' },
-        { title: '应用', dataIndex: 'app_name', key: 'app_name' },
-        { title: '请求方法', dataIndex: 'type', key: 'type' },
-        { title: '币种', dataIndex: 'symbol', key: 'symbol' },
-        { title: '参数', dataIndex: 'request_param', key: 'request_param' },
-        { title: 'IP', dataIndex: 'request_ip', key: 'request_ip' },
-        { title: '返回数据', dataIndex: 'response_data', key: 'response_data' },
-        { title: '时间', dataIndex: 'request_at', key: 'request_at' },
-    ]
-    const [list, setList] = useState([])
-    const search = () => {
-        ChUtils.Ajax.request({
-            url: '/api/get_callback_log',
-            data: {
-                page: 1,
-                limit: 10,
-                appid: currentApp.id,
+    const columns: ColumnsType<ICallBackLog> = [
+        { title: 'ID', dataIndex: 'id', key: 'id', fixed: 'left', width: 50 },
+        {
+            title: '时间',
+            dataIndex: 'return_time',
+            key: 'return_time',
+            width: 150,
+            fixed: 'left',
+            render: (return_time: string) => {
+                return return_time && ChUtils.chFormats.formatDate(Number(return_time) * 1000)
             },
-        }).then((res) => {
-            if (res.code === 0) {
-                setList(res.data.list)
+        },
+        { title: '回调地址', dataIndex: 'return_url', key: 'return_url', width: 150 },
+        {
+            title: '请求方法',
+            dataIndex: 'type',
+            key: 'type',
+        },
+        { title: '币种', dataIndex: 'symbol', key: 'symbol' },
+        {
+            title: '参数',
+            dataIndex: 'request_param',
+            key: 'request_param',
+            width: 500,
+            render: (request_param: string) => {
+                return <div className="requestLogTable-log">{request_param}</div>
+            },
+        },
+        {
+            title: '返回数据',
+            dataIndex: 'response_data',
+            key: 'response_data',
+            width: 500,
+            render: (response_data: string) => {
+                return <div className="requestLogTable-log">{response_data}</div>
+            },
+        },
+    ]
+    const search = () => {
+        formRef.validateFields().then((res) => {
+            if (res.dateRange && res.dateRange.length > 1) {
+                res.start_at = res.dateRange[0].format('YY-MM-DD hh:mm:ss')
+                res.end_at = res.dateRange[1].format('YY-MM-DD hh:mm:ss')
             }
+            delete res.dateRange
+            ChUtils.chFormats.deleteObjectEmptyKey(res)
+            reload(undefined, res)
         })
-        console.log('search')
     }
     return (
         <div className="p-l-40 p-r-40 p-t-10">
             <div className={spread ? 'search-bar search-bar_spread' : 'search-bar'}>
                 <ChForm
+                    form={formRef}
                     formData={[
                         {
                             type: FormItemType.other,
@@ -222,7 +240,7 @@ function CallbackLogTable() {
                         },
                         {
                             type: FormItemType.other,
-                            name: '1',
+                            name: 'symbol',
                             label: '',
                             dom: <PSelect options={options} style={{ width: 130 }} showArrow={false} placeholder="选择币种类型"></PSelect>,
                             layout: {
@@ -231,156 +249,7 @@ function CallbackLogTable() {
                         },
                         {
                             type: FormItemType.other,
-                            name: '2',
-                            label: '',
-                            dom: (
-                                <PSelect
-                                    options={[
-                                        {
-                                            label: '转入',
-                                            value: 1,
-                                        },
-                                        {
-                                            label: '转出',
-                                            value: 2,
-                                        },
-                                        {
-                                            label: '流水',
-                                            value: 3,
-                                        },
-                                        {
-                                            label: '回调地址',
-                                            value: 4,
-                                        },
-                                    ]}
-                                    style={{ width: 130 }}
-                                    showArrow={false}
-                                    placeholder="选择查找类型"
-                                ></PSelect>
-                            ),
-                            layout: {
-                                span: 5,
-                            },
-                        },
-                        {
-                            type: FormItemType.input,
-                            name: '3',
-                            label: '',
-                            placeholder: '请输入查找内容',
-                            layout: {
-                                span: 5,
-                            },
-                        },
-                    ]}
-                />
-            </div>
-            <Table dataSource={list} columns={columns} />
-        </div>
-    )
-}
-
-function RequestLogTable() {
-    const { currentApp } = GlobalStore.useContainer()
-    const { options } = useOptionFormListHook2({
-        url: '/api/get_open_coins',
-        query: { appid: currentApp.id },
-        labelKey: 'symbol',
-        onAjaxAfter: (res) => {
-            return { status: res.code, list: res.data }
-        },
-    })
-    const { reload } = usePage({
-        url: '/api/get_request_log',
-        pageSize: 10,
-        query: {},
-        onAjaxBefore: (req) => {
-            return {
-                url: req.url,
-                data: {
-                    page: req.data.pageNo,
-                    limit: req.data.pageSize,
-                    appid: currentApp.id,
-                },
-            }
-        },
-        isInitFetch: false,
-    })
-    const [spread, setSpread] = useState(false)
-    const columns = [
-        { title: 'ID', dataIndex: 'app_id', key: 'app_id' },
-        { title: '应用', dataIndex: 'app_name', key: 'app_name' },
-        { title: '请求方法', dataIndex: 'type', key: 'type' },
-        { title: '币种', dataIndex: 'symbol', key: 'symbol' },
-        { title: '参数', dataIndex: 'request_param', key: 'request_param' },
-        { title: 'IP', dataIndex: 'request_ip', key: 'request_ip' },
-        { title: '返回数据', dataIndex: 'response_data', key: 'response_data' },
-        { title: '时间', dataIndex: 'request_at', key: 'request_at' },
-    ]
-    const [list, setList] = useState([])
-    const search = () => {
-        ChUtils.Ajax.request({
-            url: '/api/get_callback_log',
-            data: {
-                page: 1,
-                limit: 10,
-                appid: currentApp.id,
-            },
-        }).then((res) => {
-            if (res.code === 0) {
-                setList(res.data.list)
-            }
-        })
-        console.log('search')
-    }
-    return (
-        <div className="p-l-40 p-r-40 p-t-10">
-            <div className={spread ? 'search-bar search-bar_spread' : 'search-bar'}>
-                <ChForm
-                    formData={[
-                        {
-                            type: FormItemType.other,
-                            name: 'dateRange',
-                            label: '',
-                            dom: <DropRangePicker />,
-                            layout: {
-                                span: 15,
-                            },
-                        },
-                        {
-                            type: FormItemType.other,
-                            name: 'submitButton',
-                            label: '',
-                            dom: (
-                                <div className="flex-center">
-                                    <Button onClick={search}>筛选</Button>
-                                    <a className="m-l-20 m-r-20">导出当前结果</a>
-                                    <div
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => {
-                                            setSpread(!spread)
-                                            console.log('to do 下拉')
-                                        }}
-                                    >
-                                        更多条件 {spread ? <CaretUpOutlined /> : <CaretDownOutlined />}
-                                    </div>
-                                </div>
-                            ),
-                            layout: {
-                                span: 9,
-                            },
-                        },
-                        {
-                            type: FormItemType.other,
-                            name: '1',
-                            label: '',
-                            dom: <PSelect options={options} style={{ width: 130 }} showArrow={false} placeholder="选择币种类型"></PSelect>,
-                            layout: {
-                                span: 5,
-                            },
-                        },
-                        {
-                            type: FormItemType.other,
-                            name: '2',
+                            name: 'searchType',
                             label: '',
                             dom: (
                                 <PSelect
@@ -409,7 +278,7 @@ function RequestLogTable() {
                         },
                         {
                             type: FormItemType.input,
-                            name: '3',
+                            name: 'searchValues',
                             label: '',
                             placeholder: '请输入查找内容',
                             layout: {
@@ -419,7 +288,204 @@ function RequestLogTable() {
                     ]}
                 />
             </div>
-            <Table dataSource={list} columns={columns} />
+            <div className="requestLogTable-wrap">
+                <Table
+                    loading={status === 'loading'}
+                    rowKey="id"
+                    scroll={{ x: 1600 }}
+                    dataSource={list}
+                    columns={columns}
+                    pagination={{
+                        total: total,
+                        pageSize: 10,
+                        defaultCurrent: 1,
+                        onChange: (page) => {
+                            reload(page)
+                        },
+                    }}
+                />
+            </div>
+        </div>
+    )
+}
+
+function RequestLogTable() {
+    const { currentApp } = GlobalStore.useContainer()
+    const { options } = useOptionFormListHook2({
+        url: '/api/get_open_coins',
+        query: { appid: currentApp.id },
+        labelKey: 'symbol',
+        onAjaxAfter: (res) => {
+            return { status: res.code, list: res.data }
+        },
+    })
+    const { reload, list, total, status } = usePage<IRequestLog>({
+        url: '/api/get_request_log',
+        pageSize: 10,
+        query: {},
+        onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({ appid: currentApp.id }),
+        onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
+        isInitFetch: true,
+    })
+    const [spread, setSpread] = useState(false)
+    const [formRef] = useForm()
+    const columns: ColumnsType<IRequestLog> = [
+        { title: 'ID', dataIndex: 'id', key: 'id', fixed: 'left', width: 50 },
+        {
+            title: '请求时间',
+            dataIndex: 'request_at',
+            key: 'request_at',
+            width: 150,
+            fixed: 'left',
+            render: (request_at: string) => {
+                return ChUtils.chFormats.formatDate(Number(request_at) * 1000)
+            },
+        },
+        {
+            title: '请求方法',
+            dataIndex: 'type',
+            key: 'type',
+            render: (type) => {
+                return MCallMethodType.get(type)
+            },
+        },
+        { title: '币种', dataIndex: 'symbol', key: 'symbol' },
+        { title: 'IP', dataIndex: 'request_ip', key: 'request_ip' },
+        {
+            title: '参数',
+            dataIndex: 'request_param',
+            key: 'request_param',
+            width: 300,
+            render: (request_param: string) => {
+                return <div className="requestLogTable-log">{request_param}</div>
+            },
+        },
+        {
+            title: '返回数据',
+            dataIndex: 'response_data',
+            key: 'response_data',
+            width: 300,
+            render: (response_data: string) => {
+                return <div className="requestLogTable-log">{response_data}</div>
+            },
+        },
+    ]
+    const search = () => {
+        formRef.validateFields().then((res) => {
+            if (res.dateRange && res.dateRange.length > 1) {
+                res.start_at = res.dateRange[0].format('YY-MM-DD hh:mm:ss')
+                res.end_at = res.dateRange[1].format('YY-MM-DD hh:mm:ss')
+            }
+            delete res.dateRange
+            ChUtils.chFormats.deleteObjectEmptyKey(res)
+            reload(undefined, res)
+        })
+    }
+    return (
+        <div className="p-l-40 p-r-40 p-t-10">
+            <div className={spread ? 'search-bar search-bar_spread' : 'search-bar'}>
+                <ChForm
+                    form={formRef}
+                    formData={[
+                        {
+                            type: FormItemType.other,
+                            name: 'dateRange',
+                            label: '',
+                            dom: <DropRangePicker />,
+                            layout: {
+                                span: 15,
+                            },
+                        },
+                        {
+                            type: FormItemType.other,
+                            name: 'submitButton',
+                            label: '',
+                            dom: (
+                                <div className="flex-center">
+                                    <Button onClick={search}>筛选</Button>
+                                    <a className="m-l-20 m-r-20">导出当前结果</a>
+                                    <div
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => {
+                                            setSpread(!spread)
+                                            console.log('to do 下拉')
+                                        }}
+                                    >
+                                        更多条件 {spread ? <CaretUpOutlined /> : <CaretDownOutlined />}
+                                    </div>
+                                </div>
+                            ),
+                            layout: {
+                                span: 9,
+                            },
+                        },
+                        {
+                            type: FormItemType.other,
+                            name: 'symbol',
+                            label: '',
+                            dom: <PSelect options={options} style={{ width: 130 }} showArrow={false} placeholder="选择币种类型"></PSelect>,
+                            layout: {
+                                span: 5,
+                            },
+                        },
+                        {
+                            type: FormItemType.other,
+                            name: 'searchType',
+                            label: '',
+                            dom: (
+                                <PSelect
+                                    options={[
+                                        {
+                                            label: 'GET',
+                                            value: 1,
+                                        },
+                                        {
+                                            label: 'POST',
+                                            value: 2,
+                                        },
+                                        {
+                                            label: '请求地址',
+                                            value: 3,
+                                        },
+                                    ]}
+                                    style={{ width: 130 }}
+                                    showArrow={false}
+                                    placeholder="选择查找类型"
+                                ></PSelect>
+                            ),
+                            layout: {
+                                span: 5,
+                            },
+                        },
+                        {
+                            type: FormItemType.input,
+                            name: 'searchValues',
+                            label: '',
+                            placeholder: '请输入查找内容',
+                            layout: {
+                                span: 5,
+                            },
+                        },
+                    ]}
+                />
+            </div>
+            <div className="requestLogTable-wrap">
+                <Table
+                    loading={status === 'loading'}
+                    rowKey="id"
+                    scroll={{ x: 1300 }}
+                    dataSource={list}
+                    columns={columns}
+                    pagination={{
+                        total: total,
+                        pageSize: 10,
+                        defaultCurrent: 1,
+                        onChange: (page) => {
+                            reload(page)
+                        },
+                    }}
+                />
+            </div>
         </div>
     )
 }
@@ -441,9 +507,9 @@ function CallbackSettingTable() {
     }, [modalEditCallbackSetting])
     const columns = [
         {
-            title: '应用',
-            dataIndex: 'app_name',
-            key: 'app_name',
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
             title: '类型',
@@ -457,8 +523,26 @@ function CallbackSettingTable() {
             title: '状态',
             dataIndex: 'is_default',
             key: 'is_default',
-            render: (is_default: string) => {
-                return <Switch checked={is_default == '1'} />
+            render: (is_default: string, ob: ICallBackUrlSetting) => {
+                return (
+                    <Switch
+                        onClick={(checked) => {
+                            ChUtils.Ajax.request({
+                                url: '/api/set_callbackurl_state',
+                                data: {
+                                    id: ob.id,
+                                    return_type: ob.return_type,
+                                    is_default: checked ? 1 : 0,
+                                    appid: currentApp.id,
+                                },
+                            }).then((res) => {
+                                if (res.code !== 0) return
+                                message.success('切换回调地址状态成功')
+                            })
+                        }}
+                        defaultChecked={is_default == '1'}
+                    />
+                )
             },
         },
         {

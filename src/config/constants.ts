@@ -10,6 +10,7 @@ export const AjAxPageCommonSetting = {
                 data: {
                     page: req.data.pageNo,
                     limit: req.data.pageSize,
+                    ...req.data.query,
                     ...data,
                 },
             }

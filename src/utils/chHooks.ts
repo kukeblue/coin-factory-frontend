@@ -51,51 +51,54 @@ export function usePage<T>(props: usePageProps = defaultUsePageProps) {
     const [list, setList] = useState<T[]>([])
 
     const ref = useRef({ pageNo: 1 })
-    const reload = useCallback(
-        async (pageNo?: number) => {
-            const { onReloadAfter, pageSize, url, onAjaxBefore } = props
-            setStatus('loading')
-            if (!pageNo) pageNo = 1
-            ref.current.pageNo = pageNo
-            const pz = pageSize || 10
-            let requestPrams: PageRequest = {
-                url,
-                data: {
-                    query,
-                    pageNo,
-                    pageSize: pz,
-                },
+    const reload = async (pageNo?: number, newQuery?: any) => {
+        const { onReloadAfter, pageSize, url, onAjaxBefore } = props
+        setStatus('loading')
+        if (!pageNo) pageNo = 1
+        ref.current.pageNo = pageNo
+        const pz = pageSize || 10
+        let requestPrams: PageRequest = {
+            url,
+            data: {
+                query: newQuery || query,
+                pageNo,
+                pageSize: pz,
+            },
+        }
+        if (props.onAjaxBefore) {
+            requestPrams = props.onAjaxBefore(requestPrams)
+            requestPrams.data = {
+                ...requestPrams.data,
             }
-            if (props.onAjaxBefore) {
-                requestPrams = props.onAjaxBefore(requestPrams)
-            }
-            let resp = await Ajax.request(requestPrams)
-            if (resp && props.onAjaxAfter) {
-                resp = props.onAjaxAfter(resp)
-            }
-            console.log('分页PAGE获取成功', query, resp)
-            if (resp.status === 0 && resp.page) {
-                setTotal(resp.page.total)
-                let newList: T[]
-                if (pageNo === 1) {
-                    newList = resp.page.list
-                } else {
-                    newList = [...list].concat(resp.page.list.filter((x: any) => (list.find((y: any) => y.id === x.id) ? false : true)))
-                }
-                setList(newList)
-                ref.current.pageNo = pageNo + 1
-                if (resp.page.pages < pz) {
-                    setStatus('noMore')
-                } else {
-                    setStatus('more')
-                }
+        }
+        if (newQuery) {
+            setQuery(newQuery)
+        }
+        let resp = await Ajax.request(requestPrams)
+        if (resp && props.onAjaxAfter) {
+            resp = props.onAjaxAfter(resp)
+        }
+        console.log('分页PAGE获取成功', query, resp)
+        if (resp.status === 0 && resp.page) {
+            setTotal(resp.page.total)
+            let newList: T[]
+            if (pageNo === 1) {
+                newList = resp.page.list
             } else {
-                setStatus('noMore')
+                newList = [...list].concat(resp.page.list.filter((x: any) => (list.find((y: any) => y.id === x.id) ? false : true)))
             }
-            onReloadAfter && onReloadAfter(resp)
-        },
-        [list, query, props]
-    )
+            setList(newList)
+            ref.current.pageNo = pageNo + 1
+            if (resp.page.pages < pz) {
+                setStatus('noMore')
+            } else {
+                setStatus('more')
+            }
+        } else {
+            setStatus('noMore')
+        }
+        onReloadAfter && onReloadAfter(resp)
+    }
 
     useEffect(() => {
         props.isInitFetch && reload()

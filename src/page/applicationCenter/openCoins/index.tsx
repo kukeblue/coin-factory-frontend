@@ -240,6 +240,7 @@ function ModalImportPrivateKey() {
 function ModalWalletSetting() {
     const { setModalImportPrivateKeyShow, modalWalletSettingShow, coinEditing, setModalWalletSettingShow } = OpenCoinsPageStore.useContainer()
     const [currentPrivateKey, setCurrentPrivateKey] = useState<string>()
+    const [hotWalletKey, setHotWalletKey] = useState<string>()
     const { currentApp } = GlobalStore.useContainer()
     const [confirmLoading, setConfirmLoading] = useState(false)
     const [formRef] = useForm()
@@ -259,6 +260,20 @@ function ModalWalletSetting() {
                     setCurrentPrivateKey(undefined)
                 }
             })
+            ChUtils.Ajax.request({
+                url: '/api/get_wallet_address',
+                data: {
+                    id: coinEditing?.id,
+                    appid: currentApp.id,
+                },
+            }).then((res) => {
+                if (res.code == 0) {
+                    formRef.setFieldsValue({
+                        ColdAddr: res.data.coldAddr,
+                    })
+                    setHotWalletKey(res.data.heatAddr)
+                }
+            })
         }
     }, [coinEditing, modalWalletSettingShow])
     const submit = () => {
@@ -273,8 +288,10 @@ function ModalWalletSetting() {
                 },
             })
                 .then((res) => {
-                    setModalWalletSettingShow(false)
-                    notification.success({ message: '冷热钱包设置成功' })
+                    if (res.code === 0) {
+                        setModalWalletSettingShow(false)
+                        notification.success({ message: '冷热钱包设置成功' })
+                    }
                 })
                 .finally(() => {
                     setConfirmLoading(false)
@@ -306,24 +323,15 @@ function ModalWalletSetting() {
                             <div>
                                 <div className="flex-row-center">
                                     <div>
-                                        {currentPrivateKey ? (
+                                        {hotWalletKey && (
                                             <CopyToClipboard
-                                                text={currentPrivateKey}
+                                                text={hotWalletKey}
                                                 onCopy={() => {
-                                                    message.success('私钥复制成功')
+                                                    message.success('复制成功')
                                                 }}
                                             >
-                                                <Tag className="m-r-20">复制私钥</Tag>
+                                                <span className="m-10">{hotWalletKey.substr(0, 15) + '...'}</span>
                                             </CopyToClipboard>
-                                        ) : (
-                                            <span
-                                                onClick={() => {
-                                                    setModalImportPrivateKeyShow(true)
-                                                }}
-                                                className="m-r-30 text-link"
-                                            >
-                                                导入私钥
-                                            </span>
                                         )}
                                     </div>
                                     {/*<div>*/}
@@ -337,12 +345,12 @@ function ModalWalletSetting() {
                                     {/*    </CopyToClipboard>*/}
                                     {/*</div>*/}
                                     {currentPrivateKey && (
-                                        <div style={{ position: 'relative', left: '-10px' }}>
+                                        <div style={{ position: 'relative' }}>
                                             <QRCodeViewer />
                                         </div>
                                     )}
                                     {currentPrivateKey && (
-                                        <div>
+                                        <div className="m-l-10">
                                             <a onClick={() => setModalImportPrivateKeyShow(true)}>导入私钥</a>
                                         </div>
                                     )}
