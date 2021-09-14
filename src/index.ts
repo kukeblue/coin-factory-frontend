@@ -1,4 +1,4 @@
-import App from './App'
+import App from './App/App'
 import ReactDOM from 'react-dom'
 import { ChUtils } from 'ch-ui'
 import { message } from 'antd'

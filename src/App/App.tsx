@@ -1,13 +1,13 @@
 import React from 'react'
-import Layout from './layout/index'
+import Layout from '../layout'
 import './index.less'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { routes, needLoginRoutes } from './routes'
-import Home from './page/home'
-import { GlobalStore } from './store/globalStore'
+import Home from '../page/home'
+import { GlobalStore } from '../store/globalStore'
 import zhCN from 'antd/lib/locale/zh_CN'
-import { ConfigProvider } from 'antd'
+import { ConfigProvider, Spin } from 'antd'
 
 export function App() {
     return (
@@ -23,8 +23,12 @@ export function App() {
                     })}
 
                     {needLoginRoutes.map((item) => {
-                        const DOM = loadable(() => import('./page' + item.path), {
-                            fallback: <div>loading...</div>,
+                        const DOM = loadable(() => import('../page' + item.path), {
+                            fallback: (
+                                <Spin tip={'loading'} spinning>
+                                    <div style={{ width: '100%', height: '100%' }} />
+                                </Spin>
+                            ),
                         })
                         return (
                             <Route key={item.path} path={item.routerPath}>

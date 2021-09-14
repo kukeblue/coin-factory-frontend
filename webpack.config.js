@@ -4,6 +4,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const ROOT_DIRECTORY = path.join(__dirname)
 const SRC_DIRECTORY = path.join(ROOT_DIRECTORY, 'src')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const autoprefixer = require('autoprefixer')
 
 module.exports = {
     mode: 'development',
@@ -14,6 +15,7 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.json'],
         modules: [path.resolve('node_modules'), 'node_modules'],
     },
+    target: 'web',
     devtool: 'cheap-source-map',
     devServer: {
         proxy: {
@@ -64,7 +66,7 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, 'style-loader', 'css-loader', 'postcss-loader'],
+                use: ['style-loader', 'css-loader', 'postcss-loader'],
             },
             {
                 test: /\.(less)$/,
@@ -85,6 +87,7 @@ module.exports = {
                             },
                         },
                     },
+                    'postcss-loader',
                 ],
             },
         ],

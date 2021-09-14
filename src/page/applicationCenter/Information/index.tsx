@@ -33,7 +33,7 @@ function useInformationFormPageStore() {
         ChUtils.Ajax.request({
             url: '/api/get_app_info',
             data: {
-                appid: currentApp.id,
+                appid: currentApp!.id,
             },
             method: 'post',
         }).then((res) => {
@@ -221,7 +221,7 @@ function AppKeyChanger() {
         <div className="flex-row-center">
             <div>{appInfo?.appkey || '未设置'}</div>
             <CopyToClipboard text={appInfo?.appkey || ''} onCopy={onCopy}>
-                <div className="copy-button"></div>
+                <div className="button-copy"></div>
             </CopyToClipboard>
             <Authenticator
                 callback={(v) => {
@@ -241,7 +241,7 @@ function AppSecretChanger() {
         ChUtils.Ajax.request({
             url: '/api/show_sercet',
             data: {
-                appid: currentApp.id,
+                appid: currentApp!.id,
             },
         }).then((res) => {
             if (res.code === 0 && res.data === '') {

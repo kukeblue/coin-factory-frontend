@@ -1,5 +1,5 @@
 import React from 'react'
-import { UnorderedListOutlined, DollarCircleOutlined, SyncOutlined, GlobalOutlined, FileTextOutlined } from '@ant-design/icons'
+import { UnorderedListOutlined, DollarCircleOutlined, SyncOutlined, GlobalOutlined, FileTextOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import CommonPage from '../../component/template/CommonPage'
 import './index.less'
 import Information from './Information'
@@ -9,6 +9,7 @@ import { GlobalStore } from '../../store/globalStore'
 import HasAppCheck from '../../component/auth/HasAppCheck'
 import ProtectionSetting from './protectionSetting'
 import OperationLog from './operationLog'
+import WorkOrder from './workOrder'
 
 function ApplicationCenter() {
     const { currentApp } = GlobalStore.useContainer()
@@ -43,6 +44,12 @@ function ApplicationCenter() {
                   name: '操作日志',
                   icon: <FileTextOutlined />,
                   component: <OperationLog />,
+              },
+              {
+                  path: '/applicationCenter/workOrder',
+                  name: '我的工单',
+                  icon: <QuestionCircleOutlined />,
+                  component: <WorkOrder />,
               },
           ]
         : []

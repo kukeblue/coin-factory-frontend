@@ -12,6 +12,7 @@ import { useForm } from 'antd/es/form/Form'
 import { ICallBackLog, ICallBackUrlSetting, IRequestLog, MCallbackReturnType, MCallbackStyle, MCallMethodType } from '../interface'
 import { AjAxPageCommonSetting } from '../../../config/constants'
 import { ColumnsType } from 'antd/lib/table/interface'
+import LargeTextView from '../../../component/Format/LargeTextView/LargeTextView'
 
 type ManagePageTab = 'callbackSetting' | 'requestLog' | 'callbackLog'
 
@@ -37,7 +38,7 @@ function ModalEditCallbackSetting() {
             console.log(values)
             ChUtils.Ajax.request({
                 url: '/api/insert_callback_url',
-                data: { appid: currentApp.id, ...values },
+                data: { appid: currentApp!.id, ...values },
             }).then((res) => {
                 if (res.code === 0) {
                     setModalEditCallbackSetting(false)
@@ -135,7 +136,7 @@ function CallbackLogTable() {
     const { currentApp } = GlobalStore.useContainer()
     const { options } = useOptionFormListHook2({
         url: '/api/get_open_coins',
-        query: { appid: currentApp.id },
+        query: { appid: currentApp!.id },
         labelKey: 'symbol',
         onAjaxAfter: (res) => {
             return { status: res.code, list: res.data }
@@ -145,7 +146,7 @@ function CallbackLogTable() {
         url: '/api/get_callback_log',
         pageSize: 10,
         query: {},
-        onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({ appid: currentApp.id }),
+        onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({ appid: currentApp!.id }),
         onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
         isInitFetch: true,
     })
@@ -163,29 +164,43 @@ function CallbackLogTable() {
                 return return_time && ChUtils.chFormats.formatDate(Number(return_time) * 1000)
             },
         },
-        { title: '回调地址', dataIndex: 'return_url', key: 'return_url', width: 150 },
-        {
-            title: '请求方法',
-            dataIndex: 'type',
-            key: 'type',
-        },
+        { title: '流水', dataIndex: '1', key: '1' },
         { title: '币种', dataIndex: 'symbol', key: 'symbol' },
         {
-            title: '参数',
-            dataIndex: 'request_param',
-            key: 'request_param',
-            width: 500,
-            render: (request_param: string) => {
-                return <div className="requestLogTable-log">{request_param}</div>
+            title: '方式',
+            dataIndex: 'type',
+            key: 'type',
+            render: (type) => {
+                return MCallMethodType.get(type)
             },
         },
         {
-            title: '返回数据',
-            dataIndex: 'response_data',
-            key: 'response_data',
-            width: 500,
-            render: (response_data: string) => {
-                return <div className="requestLogTable-log">{response_data}</div>
+            title: '数据',
+            dataIndex: 'request_param',
+            key: 'request_param',
+            render: (request_param) => {
+                return <LargeTextView text={request_param} disableTooltip />
+            },
+        },
+        {
+            title: '响应',
+            dataIndex: 'response_param',
+            key: 'response_param',
+            render: (response_param) => {
+                return <LargeTextView text={response_param} disableTooltip />
+            },
+        },
+        {
+            title: '状态码',
+            dataIndex: 'code',
+            key: 'code',
+        },
+        {
+            title: '日志',
+            dataIndex: 'err',
+            key: 'err',
+            render: (err) => {
+                return <LargeTextView text={err} />
             },
         },
     ]
@@ -201,8 +216,8 @@ function CallbackLogTable() {
         })
     }
     return (
-        <div className="p-l-40 p-r-40 p-t-10">
-            <div className={spread ? 'search-bar search-bar_spread' : 'search-bar'}>
+        <>
+            <div className={spread ? 'search-bar_spread' : 'search-bar'}>
                 <ChForm
                     form={formRef}
                     formData={[
@@ -270,7 +285,7 @@ function CallbackLogTable() {
                                     style={{ width: 130 }}
                                     showArrow={false}
                                     placeholder="选择查找类型"
-                                ></PSelect>
+                                />
                             ),
                             layout: {
                                 span: 5,
@@ -292,7 +307,7 @@ function CallbackLogTable() {
                 <Table
                     loading={status === 'loading'}
                     rowKey="id"
-                    scroll={{ x: 1600 }}
+                    scroll={{ x: 1300 }}
                     dataSource={list}
                     columns={columns}
                     pagination={{
@@ -305,7 +320,7 @@ function CallbackLogTable() {
                     }}
                 />
             </div>
-        </div>
+        </>
     )
 }
 
@@ -313,7 +328,7 @@ function RequestLogTable() {
     const { currentApp } = GlobalStore.useContainer()
     const { options } = useOptionFormListHook2({
         url: '/api/get_open_coins',
-        query: { appid: currentApp.id },
+        query: { appid: currentApp!.id },
         labelKey: 'symbol',
         onAjaxAfter: (res) => {
             return { status: res.code, list: res.data }
@@ -323,7 +338,7 @@ function RequestLogTable() {
         url: '/api/get_request_log',
         pageSize: 10,
         query: {},
-        onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({ appid: currentApp.id }),
+        onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({ appid: currentApp!.id }),
         onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
         isInitFetch: true,
     })
@@ -345,9 +360,6 @@ function RequestLogTable() {
             title: '请求方法',
             dataIndex: 'type',
             key: 'type',
-            render: (type) => {
-                return MCallMethodType.get(type)
-            },
         },
         { title: '币种', dataIndex: 'symbol', key: 'symbol' },
         { title: 'IP', dataIndex: 'request_ip', key: 'request_ip' },
@@ -357,7 +369,7 @@ function RequestLogTable() {
             key: 'request_param',
             width: 300,
             render: (request_param: string) => {
-                return <div className="requestLogTable-log">{request_param}</div>
+                return <LargeTextView text={request_param} />
             },
         },
         {
@@ -366,7 +378,7 @@ function RequestLogTable() {
             key: 'response_data',
             width: 300,
             render: (response_data: string) => {
-                return <div className="requestLogTable-log">{response_data}</div>
+                return <div className="requestLogTable-log">{response_data != 'null' ? <LargeTextView text={response_data} /> : ''}</div>
             },
         },
     ]
@@ -382,8 +394,8 @@ function RequestLogTable() {
         })
     }
     return (
-        <div className="p-l-40 p-r-40 p-t-10">
-            <div className={spread ? 'search-bar search-bar_spread' : 'search-bar'}>
+        <>
+            <div className={spread ? 'search-bar_spread' : 'search-bar'}>
                 <ChForm
                     form={formRef}
                     formData={[
@@ -486,7 +498,7 @@ function RequestLogTable() {
                     }}
                 />
             </div>
-        </div>
+        </>
     )
 }
 
@@ -497,7 +509,7 @@ function CallbackSettingTable() {
         url: '/api/get_callbackurl_page',
         pageSize: 10,
         query: {},
-        onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({ appid: currentApp.id }),
+        onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({ appid: currentApp!.id }),
         onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
     })
     useEffect(() => {
@@ -533,7 +545,7 @@ function CallbackSettingTable() {
                                     id: ob.id,
                                     return_type: ob.return_type,
                                     is_default: checked ? 1 : 0,
-                                    appid: currentApp.id,
+                                    appid: currentApp!.id,
                                 },
                             }).then((res) => {
                                 if (res.code !== 0) return
@@ -577,7 +589,7 @@ function CallbackSettingTable() {
                                 url: '/api/del_callbackurl_by_id',
                                 data: {
                                     id: ob.id,
-                                    appid: currentApp.id,
+                                    appid: currentApp!.id,
                                 },
                             }).then((res) => {
                                 reload()
@@ -593,7 +605,7 @@ function CallbackSettingTable() {
         },
     ]
     return (
-        <div className="p-l-40 p-r-40 p-t-10">
+        <>
             <ModalEditCallbackSetting />
             <div className="m-b-20" style={{ float: 'right' }}>
                 <Button onClick={() => setModalEditCallbackSetting(true)} style={{ width: 80 }} type="primary">
@@ -613,7 +625,7 @@ function CallbackSettingTable() {
                     },
                 }}
             />
-        </div>
+        </>
     )
 }
 
@@ -622,9 +634,11 @@ function CallbackManagement() {
     return (
         <div className="applicationCenter-callbackManagement">
             <Header />
-            {pageTab === 'callbackSetting' && <CallbackSettingTable />}
-            {pageTab === 'requestLog' && <RequestLogTable />}
-            {pageTab === 'callbackLog' && <CallbackLogTable />}
+            <div className="table-wrap">
+                {pageTab === 'callbackSetting' && <CallbackSettingTable />}
+                {pageTab === 'requestLog' && <RequestLogTable />}
+                {pageTab === 'callbackLog' && <CallbackLogTable />}
+            </div>
         </div>
     )
 }

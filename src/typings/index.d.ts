@@ -1,5 +1,15 @@
 export type VerificationCodeType = 'phone' | 'email' | 'google'
 
+export interface ISystemNotification {
+    content: string
+    create_time: string
+    id: string
+    is_see: string
+    state: string
+    title: string
+    user_id: string
+}
+
 export interface IUserInfo {
     current_ip: string
     current_time: number

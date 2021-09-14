@@ -5,6 +5,7 @@
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
+    scrollbar-width: none;
     .ant-layout-header {
         width: 100%;
         padding: 0px;
@@ -13,11 +14,30 @@
         z-index: 998;
     }
 }
+.admin-layout::-webkit-scrollbar {
+    display: none;
+}
 .layout {
     width: 100%;
     height: 100%;
     min-width: 1080px;
     background-color: #f2f2f3;
+}
+.header-logo {
+    border-radius: 5px;
+    width: 35px;
+    height: 35px;
+    background-color: #ccc;
+    margin-left: 20px;
+}
+.header-app-name {
+    margin-left: 5px;
+    height: 30px;
+    color: #fff;
+    padding-right: 5px;
+    border-right: 0px solid #eee;
+    line-height: 30px;
+    font-size: 14px;
 }
 .layout-logo {
     width: 100px;
@@ -45,8 +65,8 @@
 }
 .layout-splitline {
     height: 30px;
-    width: 2px;
-    background-color: #54585a;
+    width: 1px;
+    background-color: #eee;
     margin: 0 30px;
     margin-right: 20px;
 }
@@ -74,7 +94,6 @@
 .layout-header-option:hover {
     font-size: 15px;
     color: #15c8c0;
-    cursor: default;
 }
 .layout-content {
     min-width: 1080px;

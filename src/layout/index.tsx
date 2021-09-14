@@ -1,11 +1,12 @@
-import { Button, Layout } from 'antd'
+import { Button, Layout, Badge } from 'antd'
 import React, { useEffect, useState } from 'react'
 import './index.less'
 import { Menu } from 'antd'
 import { useHistory, useLocation } from 'react-router-dom'
 import { SyncOutlined } from '@ant-design/icons'
 import { GlobalStore } from '../store/globalStore'
-
+import SystemNotification from '../component/modal/SystemNotification'
+let intervalId: any
 const { Header } = Layout
 
 const LayoutConfig = {
@@ -34,30 +35,37 @@ function LayoutHeader() {
     const history = useHistory()
     const [currentPath, setCurrentPath] = useState('')
     const { headerMenus } = LayoutConfig
-    const { currentApp } = GlobalStore.useContainer()
+    const { currentApp, notificationTipCount, setModalSystemNotificationShow, setCurrentApp } = GlobalStore.useContainer()
     useEffect(() => {
         setCurrentPath('/' + location.pathname.split('/')[1])
     }, [location.pathname])
 
     const logout = () => {
-        localStorage.clear()
+        setCurrentApp(undefined)
         window.location.href = '/login'
     }
     return (
         <Header style={{ background: '#23282B' }} className="flex-center">
             <div className="layout-header flex-row-between">
                 <div className="flex-center">
-                    <div className="layout-logo"></div>
+                    {currentApp ? (
+                        <div
+                            onClick={() => {
+                                history.push('/application')
+                            }}
+                            className={location.pathname === '/application' ? 'layout-change-application active flex-center' : 'layout-change-application flex-center'}
+                        >
+                            <div className="flex-center">
+                                <img className="header-logo" src={currentApp?.logo}></img>
+                                <div className="header-app-name">{currentApp ? currentApp.app_name : '--'}</div>
+                            </div>
+                            <SyncOutlined />
+                            <span className="m-l-5">{currentApp ? '切换' : '选择应用'}</span>
+                        </div>
+                    ) : (
+                        <div className="layout-logo"></div>
+                    )}
                     <div className="layout-splitline"></div>
-                    <div
-                        onClick={() => {
-                            history.push('/application')
-                        }}
-                        className={location.pathname === '/application' ? 'layout-change-application active' : 'layout-change-application'}
-                    >
-                        <SyncOutlined />
-                        <span className="m-l-5">切换应用</span>
-                    </div>
                     <Menu defaultSelectedKeys={['/' + location.pathname.split('/')[1]]} selectedKeys={[currentPath]} theme="dark" className="layout-menu" mode="horizontal">
                         {headerMenus.map((item) => {
                             return (
@@ -74,17 +82,18 @@ function LayoutHeader() {
 
                         <Menu.Item key="5">开发文档</Menu.Item>
                         <Menu.Item key="6">上币申请</Menu.Item>
-                        <Menu.Item key="7">商户中心</Menu.Item>
+                        {/*<Menu.Item key="7">商户中心</Menu.Item>*/}
                     </Menu>
                 </div>
                 <div className="flex-center layout-header-right">
-                    <div style={{ fontSize: 12 }} className="layout-header-option m-r-10">
-                        当前应用:<a className="m-l-5">{currentApp?.app_name || '无'}</a>
-                    </div>
-                    <div className="flex-center layout-header-option m-r-20">
-                        <span className="iconfont icon-xiaoxi"></span>
-                        消息
-                    </div>
+                    <a className="flex-center" onClick={() => setModalSystemNotificationShow(true)}>
+                        <Badge offset={[-68, 0]} size="small" overflowCount={99} count={notificationTipCount}>
+                            <div style={{ cursor: 'pointer' }} className="flex-center layout-header-option m-r-20">
+                                <span style={{ fontSize: '20px' }} className="iconfont icon-xiaoxi" />
+                                消息
+                            </div>
+                        </Badge>
+                    </a>
                     <div onClick={logout} className="layout-header-option m-b-3">
                         退出
                     </div>
@@ -95,13 +104,25 @@ function LayoutHeader() {
 }
 
 function AdminLayout({ children }: { children: JSX.Element }) {
-    const { fetchUserInfo } = GlobalStore.useContainer()
+    const { fetchUserInfo, getNotification } = GlobalStore.useContainer()
     useEffect(() => {
         fetchUserInfo()
+    }, [])
+    useEffect(() => {
+        getNotification()
+        intervalId = setInterval(() => {
+            getNotification().catch((res) => {
+                clearInterval(intervalId)
+            })
+        }, 10000)
+        return () => {
+            clearInterval(intervalId)
+        }
     }, [])
     return (
         <div className="admin-layout">
             <LayoutHeader />
+            <SystemNotification />
             <div className="layout-content">{children}</div>
         </div>
     )

@@ -1,20 +1,32 @@
 import React from 'react'
 import { Button, Menu, Table } from 'antd'
-import { ChForm, FormItemType } from 'ch-ui'
+import { ChForm, ChUtils, FormItemType } from 'ch-ui'
 import DropRangePicker from '../../../component/from/DropRangePicker'
 import { usePage } from '../../../utils/chHooks'
-import { ICallBackUrlSetting } from '../interface'
+import { IUserLog } from '../interface'
 import { AjAxPageCommonSetting } from '../../../config/constants'
+import { useForm } from 'antd/lib/form/Form'
 
 function OperationLogTable() {
-    const search = () => {}
-    const { list, total, reload, status } = usePage<ICallBackUrlSetting>({
+    const search = () => {
+        formRef.validateFields().then((values) => {
+            if (values.dateRange && values.dateRange.length > 1) {
+                values.start_at = values.dateRange[0].format('YY-MM-DD hh:mm:ss')
+                values.end_at = values.dateRange[1].format('YY-MM-DD hh:mm:ss')
+                delete values.dateRange
+            }
+            ChUtils.chFormats.deleteObjectEmptyKey(values)
+            reload(undefined, values)
+        })
+    }
+    const [formRef] = useForm()
+    const { list, total, reload, status } = usePage<IUserLog>({
         url: '/api/get_user_log',
         pageSize: 10,
         query: {},
         onAjaxBefore: AjAxPageCommonSetting.buildOnAjaxBefore({}),
         onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
-        isInitFetch: false,
+        isInitFetch: true,
     })
     const columns = [
         {
@@ -24,39 +36,39 @@ function OperationLogTable() {
         },
         {
             title: '操作说明',
-            dataIndex: '1',
-            key: '1',
-        },
-        {
-            title: '应用',
-            dataIndex: '3',
-            key: '3',
+            dataIndex: 'name',
+            key: 'name',
+            width: 150,
         },
         {
             title: 'IP',
-            dataIndex: '4',
-            key: '4',
+            dataIndex: 'ip',
+            key: 'ip',
         },
         {
             title: '浏览器',
-            dataIndex: '5',
-            key: '5',
+            dataIndex: 'browser',
+            key: 'browser',
         },
         {
             title: '访问路径',
-            dataIndex: '6',
-            key: '6',
+            dataIndex: 'url',
+            key: 'url',
         },
         {
             title: '时间',
-            dataIndex: '7',
-            key: '7',
+            dataIndex: 'otime',
+            key: 'otime',
+            render: (otime: string) => {
+                return ChUtils.chFormats.formatDate(Number(otime) * 1000)
+            },
         },
     ]
     return (
         <div className="p-l-40 p-r-40">
             <div style={{ height: 50 }} className="m-t-10">
                 <ChForm
+                    form={formRef}
                     formData={[
                         {
                             type: FormItemType.other,
@@ -83,7 +95,20 @@ function OperationLogTable() {
                     ]}
                 />
             </div>
-            <Table rowKey="id" dataSource={[]} columns={columns} />
+            <Table
+                loading={status === 'loading'}
+                rowKey="id"
+                dataSource={list}
+                columns={columns}
+                pagination={{
+                    total: total,
+                    pageSize: 10,
+                    defaultCurrent: 1,
+                    onChange: (page) => {
+                        reload(page)
+                    },
+                }}
+            />
         </div>
     )
 }
@@ -102,7 +127,7 @@ function Header() {
 
 function OperationLog() {
     return (
-        <div className="applicationCenter-operationLog">
+        <div style={{ height: 0 }} className="applicationCenter-operationLog">
             <Header></Header>
             <OperationLogTable />
         </div>

@@ -31,7 +31,7 @@ function useOpenCoinsPageStore() {
             url: '/api/get_open_coins',
             method: 'post',
             data: {
-                appid: currentApp.id,
+                appid: currentApp!.id,
             },
         })
             .then((res) => {
@@ -42,7 +42,7 @@ function useOpenCoinsPageStore() {
             .finally(() => {
                 setCoinsTableLoading(false)
             })
-    }, [currentApp.id])
+    }, [currentApp!.id])
 
     useEffect(() => {
         fetchCoins()
@@ -83,7 +83,7 @@ function ModalDeleteAppCoin() {
                     url: '/api/del_coins',
                     data: {
                         id: coinEditing?.id,
-                        appid: currentApp.id,
+                        appid: currentApp!.id,
                     },
                 }).then((res) => {
                     if (res.code === 0) {
@@ -119,7 +119,7 @@ function ModalPayThresholdValueSetting() {
                 url: '/api/set_limit',
                 data: {
                     ...values,
-                    appid: currentApp.id,
+                    appid: currentApp!.id,
                     id: coinEditing?.id,
                 },
             }).then((res) => {
@@ -186,7 +186,7 @@ function ModalImportPrivateKey() {
         ChUtils.Ajax.request({
             url: '/api/get_pub_addr',
             data: {
-                appid: currentApp.id,
+                appid: currentApp!.id,
                 id: coinEditing?.id,
             },
         })
@@ -205,7 +205,7 @@ function ModalImportPrivateKey() {
                 url: '/api/import_pri',
                 data: {
                     privatekey: privateKey,
-                    appid: currentApp.id,
+                    appid: currentApp!.id,
                     id: coinEditing!.id,
                 },
             }).then((res) => {
@@ -251,7 +251,7 @@ function ModalWalletSetting() {
                 url: '/api/export_pri',
                 data: {
                     symbol: coinEditing?.symbol,
-                    appid: currentApp.id,
+                    appid: currentApp!.id,
                 },
             }).then((res) => {
                 if (res.code == 0) {
@@ -264,7 +264,7 @@ function ModalWalletSetting() {
                 url: '/api/get_wallet_address',
                 data: {
                     id: coinEditing?.id,
-                    appid: currentApp.id,
+                    appid: currentApp!.id,
                 },
             }).then((res) => {
                 if (res.code == 0) {
@@ -283,7 +283,7 @@ function ModalWalletSetting() {
                 url: '/api/bind_account',
                 data: {
                     id: coinEditing?.id,
-                    appid: currentApp.id,
+                    appid: currentApp!.id,
                     ...values,
                 },
             })
@@ -341,7 +341,7 @@ function ModalWalletSetting() {
                                     {/*            message.success('私钥复制成功')*/}
                                     {/*        }}*/}
                                     {/*    >*/}
-                                    {/*        <div className="copy-button"></div>*/}
+                                    {/*        <div className="button-copy"></div>*/}
                                     {/*    </CopyToClipboard>*/}
                                     {/*</div>*/}
                                     {currentPrivateKey && (
@@ -399,7 +399,7 @@ function ModalCanOpenCoinList() {
             url: '/api/open_coins',
             data: {
                 symbols: selectedRowKeys?.toString(),
-                appid: currentApp.id,
+                appid: currentApp!.id,
             },
         }).then((res) => {
             if (res.code == 0) {
@@ -517,7 +517,7 @@ function OpenedCoinsTable() {
                     onChange={(checked) => {
                         ChUtils.Ajax.request({
                             url: '/api/set_app_state',
-                            data: { id: ob.id, appid: currentApp.id, state: checked ? 1 : 0 },
+                            data: { id: ob.id, appid: currentApp!.id, state: checked ? 1 : 0 },
                         }).then((res) => {
                             if (res.code === 0) {
                                 notification.success({ message: '修改状态成功' })

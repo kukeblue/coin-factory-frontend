@@ -1,8 +1,6 @@
 import React from 'react'
-import Capital from './page/capital'
-import Login from './page/login'
-import Register from './page/register'
-import Home from './page/home'
+import Login from '../page/login'
+import Register from '../page/register'
 
 export const routes = [
     {

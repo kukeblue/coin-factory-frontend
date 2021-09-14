@@ -1,19 +1,13 @@
 import { Alert, Button, Menu, Table } from 'antd'
 import { AccountBookOutlined, EnvironmentOutlined, DollarOutlined } from '@ant-design/icons'
 import React, { useEffect, useState } from 'react'
-import { createContainer } from 'unstated-next'
 import './index.less'
-import { ChForm, ChTablePanel, FormItemType } from 'ch-ui'
-import constants, { AjAxPageCommonSetting } from '../../config/constants'
-import { Route, Switch, useHistory } from 'react-router-dom'
 import CommonPage from '../../component/template/CommonPage'
-import DropRangePicker from '../../component/from/DropRangePicker'
-import PSelect from '../../component/from/PSelect'
-import { usePage } from '../../utils/chHooks'
-import { ICallBackUrlSetting } from '../applicationCenter/interface'
 import { GlobalStore } from '../../store/globalStore'
 import HasAppCheck from '../../component/auth/HasAppCheck'
-import MerchantCapital from './MerchantCapital'
+import MerchantCapital from './merchantCapital'
+import Address from './address'
+import Bill from './bill'
 const { SubMenu } = Menu
 
 function Capital() {
@@ -35,11 +29,13 @@ function Capital() {
                         path: '/capital/address',
                         name: '地址管理',
                         icon: <EnvironmentOutlined />,
+                        component: currentApp ? <Address /> : <div />,
                     },
                     {
                         path: '/capital/recharge',
                         name: '充值管理',
                         icon: <DollarOutlined />,
+                        component: currentApp ? <Bill /> : <div />,
                     },
                 ]}
             />

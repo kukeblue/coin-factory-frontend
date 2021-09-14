@@ -4,16 +4,50 @@ import { ChUtils } from 'ch-ui'
 import { VerificationCodeType, IUserInfo } from '../typings'
 import { defaultUserInfo } from './initializedData'
 import { message } from 'antd'
+import chHooks from '../utils/chHooks'
+import { useHistory } from 'react-router-dom'
 const chCache = ChUtils.chCache
-
 function useGlobalStore() {
-    const [currentApp, setCurrentApp] = useState<IApplication>(chCache.getObCache('currentApp'))
+    const [currentApp, setCurrentApp] = useState<IApplication | undefined | null>()
     const [userInfo, setUserInfo] = useState<IUserInfo>(defaultUserInfo)
+    const [notificationTipCount, setNotificationTipCount] = useState(0)
+    const [modalSystemNotificationShow, setModalSystemNotificationShow] = useState(false)
+    const history = useHistory()
+    useEffect(() => {
+        if (!userInfo || !currentApp) return
+        chCache.setObCache('currentApp_' + userInfo.uid, currentApp)
+    }, [currentApp])
+
+    const getNotification = async () => {
+        if (!userInfo) return
+        const res = await ChUtils.Ajax.request({
+            url: '/api/get_remind',
+        })
+        if (res.code !== 0) {
+            throw Error('need login')
+        }
+        setNotificationTipCount(res.data)
+    }
 
     useEffect(() => {
-        if (!currentApp) return
-        chCache.setObCache('currentApp', currentApp)
-    }, [currentApp])
+        if (!userInfo) return
+        const currentApp = chCache.getObCache('currentApp_' + userInfo.uid)
+        if (currentApp) {
+            setCurrentApp(currentApp)
+        } else {
+            ChUtils.Ajax.request({
+                url: '/api/get_app_list',
+            }).then((res) => {
+                if (res.code === 0) {
+                    if (res.data && res.data.length > 0) {
+                        setCurrentApp(res.data[0])
+                    } else {
+                        // history.push('/application')
+                    }
+                }
+            })
+        }
+    }, [userInfo])
 
     const fetchUserInfo = () => {
         ChUtils.Ajax.request({
@@ -80,6 +114,10 @@ function useGlobalStore() {
         setCurrentApp,
         fetchUserInfo,
         fetchAuthCode,
+        notificationTipCount,
+        modalSystemNotificationShow,
+        setModalSystemNotificationShow,
+        getNotification,
     }
 }
 

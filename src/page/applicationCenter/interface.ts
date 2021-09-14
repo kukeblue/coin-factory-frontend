@@ -1,3 +1,27 @@
+export interface IWordOrder {
+    contents: string
+    create_at: string
+    id: string
+    ordid: string
+    state: string
+    status: string
+    title: string
+    update_at: string
+    user_id: string
+}
+
+export interface IUserLog {
+    browser: string
+    data: string
+    id: string
+    ip: string
+    method: string
+    name: string
+    otime: string
+    uid: string
+    url: string
+}
+
 export interface IAppInfo {
     allows_ip: string
     app_name: string
@@ -77,3 +101,5 @@ export const MCallMethodType = new Map([
     ['2', 'POST'],
     ['3', '请求地址'],
 ])
+
+export const MWorkOrderStatusMap = new Map([['0', '处理中']])
