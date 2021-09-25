@@ -37,6 +37,7 @@ export interface IOpenCoin {
     state: number
     symbol: string
     total: number
+    sacle: string
 }
 
 export interface IPage<T> {

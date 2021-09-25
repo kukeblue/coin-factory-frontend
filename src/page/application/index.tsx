@@ -46,7 +46,7 @@ const ApplicationPageStore = createContainer(useApplicationPageStore)
 function ApplicationCards() {
     const { setShowAddApplicationModal, apps, setApps, loading, setLoading } = ApplicationPageStore.useContainer()
     const { setCurrentApp } = GlobalStore.useContainer()
-
+    const history = useHistory()
     const statusColor = (status: string) => {
         return status === '已过期' ? '#f43b3a' : status === '即将过期' ? '#f50' : '#87d068'
     }
@@ -103,6 +103,7 @@ function ApplicationCards() {
                                                     setLoading(false)
                                                     setCurrentApp(app)
                                                     notification.success({ message: '切换应用成功' })
+                                                    history.push('/')
                                                 }, 1000)
                                             }}
                                             size="small"

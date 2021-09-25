@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react'
 import './index.less'
 import { Menu } from 'antd'
 import { useHistory, useLocation } from 'react-router-dom'
-import { SyncOutlined } from '@ant-design/icons'
+import { SyncOutlined, LogoutOutlined } from '@ant-design/icons'
 import { GlobalStore } from '../store/globalStore'
 import SystemNotification from '../component/modal/SystemNotification'
+import { ChUtils } from 'ch-ui'
 let intervalId: any
 const { Header } = Layout
 
@@ -27,6 +28,10 @@ const LayoutConfig = {
             path: '/applicationCenter',
             name: '应用中心',
         },
+        {
+            path: '/developDocument',
+            name: '开发文档',
+        },
     ],
 }
 
@@ -41,6 +46,9 @@ function LayoutHeader() {
     }, [location.pathname])
 
     const logout = () => {
+        ChUtils.Ajax.request({
+            url: '/api/login_out',
+        })
         setCurrentApp(undefined)
         window.location.href = '/login'
     }
@@ -79,8 +87,6 @@ function LayoutHeader() {
                                 </Menu.Item>
                             )
                         })}
-
-                        <Menu.Item key="5">开发文档</Menu.Item>
                         <Menu.Item key="6">上币申请</Menu.Item>
                         {/*<Menu.Item key="7">商户中心</Menu.Item>*/}
                     </Menu>
@@ -88,13 +94,14 @@ function LayoutHeader() {
                 <div className="flex-center layout-header-right">
                     <a className="flex-center" onClick={() => setModalSystemNotificationShow(true)}>
                         <Badge offset={[-68, 0]} size="small" overflowCount={99} count={notificationTipCount}>
-                            <div style={{ cursor: 'pointer' }} className="flex-center layout-header-option m-r-20">
-                                <span style={{ fontSize: '20px' }} className="iconfont icon-xiaoxi" />
+                            <div style={{ cursor: 'pointer' }} className="flex-center layout-header-option m-r-10">
+                                <span style={{ fontSize: '19px', position: 'relative', top: '-1px' }} className="iconfont icon-xiaoxi" />
                                 消息
                             </div>
                         </Badge>
                     </a>
                     <div onClick={logout} className="layout-header-option m-b-3">
+                        <LogoutOutlined style={{ fontSize: 17, marginRight: 2, position: 'relative', top: '1px' }} />
                         退出
                     </div>
                 </div>
@@ -130,7 +137,11 @@ function AdminLayout({ children }: { children: JSX.Element }) {
 
 function MyLayout({ children }: { children: JSX.Element }) {
     const location = useLocation()
-    return <div className="layout">{location.pathname.includes('login') || location.pathname.includes('register') ? <>{children}</> : <AdminLayout>{children}</AdminLayout>}</div>
+    const noLoginPaths = ['resetPassword', 'login', 'register']
+    const showAdminLayout = noLoginPaths.some((item) => {
+        return location.pathname.includes(item)
+    })
+    return <div className="layout">{showAdminLayout ? <>{children}</> : <AdminLayout>{children}</AdminLayout>}</div>
 }
 
 export default MyLayout

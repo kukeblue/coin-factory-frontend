@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Title</title>
+    <style>
+        body, html {
+            padding: 0;
+            margin: 0;
+            font: 12px/1.5 "微软雅黑", "黑体", "宋体";
+            width: 100%;
+            height: 100%;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flex-row-center {
+            display: flex;
+            align-items: center;
+        }
+        .flex-column-center {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        button {
+            border: none;
+            background-color: transparent;
+            outline: none;
+        }
+        .home {
+            background-color: #f9fafc;
+            width: 100%;
+        }
+        .block1 {
+            width: 100%;
+            height: auto;
+            box-sizing: border-box;
+            padding: 0px 10%;
+            background-image: url("/top01.jpg");
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+        }
+        .header {
+            position: relative;
+            top: -3px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 6vw;
+        }
+        .header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+            border: 1px solid #0bb6ad;
+            height: 3vw;
+            width: 9vw;
+            color: #fff;
+        }
+        .header-nav-item {
+            margin-right: .5vw;
+            padding: 2vw .5vw 1.3vw;
+            color: #FFFFFF;
+            font-size: 1.2vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-nav-item_active {
+            margin-right: .5vw;
+            padding: 2vw .5vw 1vw;
+            color: #FFFFFF;
+            font-size: 1.2vw;
+            background-color: #3855d6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: solid 0.3vw #fff;
+            box-sizing: border-box;
+        }
+        .register {
+            height: 2vw;
+            margin-top: .6vw;
+            background-color: #384e66;
+            color: #FFFFFF;
+            padding: 0 1.8vw;
+            margin-right: 1.2vw;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1vw;
+
+        }
+        .login {
+            height: 1.9vw;
+            margin-top: .6vw;
+            padding: 0 1.8vw;
+            margin-right: 1.2vw;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1vw;
+            background-color: #d0d9fb;
+            color: #0749f9;
+            line-height: 1vw;
+        }
+        .block1-text {
+            margin-top: 8vw;
+            width: 36vw;
+            color: #fff;
+        }
+        .block1-text-title {
+            font-size: 2.2vw;
+            font-weight: 600;
+            padding-bottom: .5vw;
+        }
+        .block1-text > p {
+            font-size: 1.1vw;
+            line-height: 1.8vw;
+        }
+        .customer {
+            width: 25%;
+            margin-top: 2.8vw;
+        }
+        .customer > img {
+            width: 100%;
+            height: auto;
+        }
+        .block1-text2 {
+            margin-top: 23vw;
+            padding-left: 60%;
+            padding-bottom: 10vw;
+        }
+        .block1-text2-title {
+            font-size: 2.2vw;
+            font-weight: 600;
+            padding-bottom: .5vw;
+            color: #34495e;
+        }
+        .block1-text2-dec {
+            width: 50%;
+        }
+        .block1-text2-dec > img {
+            width: 100%;
+            height: auto;
+        }
+        .block1-text2 > p {
+            font-size: 0.9vw;
+            line-height: 1.1vw;
+            margin-top: .5vw;
+        }
+    </style>
+    <style>
+        .threewrap {
+            position: relative;
+            padding-top: 25vw;
+        }
+        .dot {
+            position: absolute;
+            left: 0;
+            top: 20%;
+            width: 3%;
+        }
+        img {
+            width: 100%;
+            height: auto;
+        }
+        .wrapcenter {
+            max-width: 80%;
+            margin: auto;
+        }
+        .bkcolor {
+            display: block;
+            width: 95%;
+            margin: auto;
+            height: 8vw;
+            background-color: #eef1fc;
+            border-radius: 1vw;
+            margin-bottom: -33vw;
+        }
+        .threewrap ul {
+            width: 85%;
+            padding: 5vw 0;
+            margin: auto;
+            align-items: center;
+            justify-content: space-between;
+            display: flex;
+        }
+        .backimg {
+            background-position: top center;
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+            width: 28%;
+            padding-bottom: 1.5vw;
+            cursor: pointer;
+        }
+        .backimg > img {
+            margin-top: -2vw;
+        }
+        .text {
+            position: relative;
+            top: -1vw;
+            color: #34495e;
+            width: 92%;
+            margin: auto;
+        }
+        h3 {
+            font-size: 1.3vw;
+            font-weight: 600;
+            text-align: center;
+        }
+        .threewrap ul li .text p {
+            font-size: 1vw;
+            line-height: 1.3vw;
+            padding: 0px !important;
+        }
+    </style>
+    <style>
+        .sportswrap {
+            background-repeat: no-repeat;
+            background-position: right 20%;
+            background-size: 20% auto;
+            background-image: url(/half.png);
+        }
+        .sportswrap .wrapcenter {
+            position: relative;
+            width: 75%;
+            color: #34495e;
+        }
+        .wrapcenter {
+            max-width: 80%;
+            margin: auto;
+        }
+        .sportswrap .fourwrap .topdot {
+            width: 10%;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .sportswrap .title h3 {
+            font-size: 1.8vw;
+            font-weight: 600;
+        }
+        .sportswrap .title img {
+            width: 15%;
+            margin-left: .5vw;
+        }
+        .sportswrap .fourwrap ul {
+            padding: 8vw 0;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+        }
+        .sportswrap .fourwrap ul li {
+            background-color: #FFFFFF;
+            width: 30%;
+            border-radius: 1vw;
+            padding: 2vw 0 1.5vw;
+        }
+        .sportswrap .fourwrap ul li:nth-child(2) {
+            transform: scale(1.2);
+            box-shadow: 5px 5px 5px #EEEEEE;
+            height: 28vw;
+        }
+        .sportswrap .fourwrap ul li {
+            background-color: #FFFFFF;
+            width: 30%;
+            border-radius: 1vw;
+            padding: 2vw 0 1.5vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sportswrap .fourwrap .bottomdot {
+            width: 10%;
+            position: absolute;
+            bottom: 10%;
+            left: -3%;
+            z-index: 1;
+        }
+        .sportswrap .fourwrap ul li img {
+            height: 15vw;
+            width: auto;
+        }
+        .wrapcenter .text {
+            position: relative;
+            top: .3vw;
+            color: #34495e;
+            width: 92%;
+            margin: auto;
+            text-align: left;
+        }
+        .sportswrap .text h3 {
+            text-align: left;
+        }
+        .sportswrap .fourwrap ul li .text p {
+            font-size: 1vw;
+            margin-top: .3vw;
+        }
+        .sixwrap ul {
+            width: 90%;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+        }
+        .sixwrap ul li {
+            width: 22%;
+            border-radius: 1vw;
+        }
+    </style>
+    <style>
+        h3 {
+            margin:0;
+            padding:0;
+        }
+        .sixwrap {
+            padding: 3vw 0;
+        }
+        .wrapcenter {
+            max-width: 80%;
+            margin: auto;
+        }
+        .sixwrap .title h3 {
+            color: #34495e;
+            font-size: 1.8vw;
+            font-weight: 600;
+        }
+        .sixwrap .title img {
+            width: 25%;
+            padding: .5vw 0 2vw;
+        }
+        ol, ul {
+            list-style: none;
+        }
+        ul, li, p {
+            margin: 0;
+            padding: 0;
+        }
+        .wrapcenter {
+            max-width: 80%;
+            margin: auto;
+        }
+        .footerlogo {
+            padding: 5vw 0 1vw;
+            width: 90%;
+            height: 10vw;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footerlogo img {
+            width: 30%;
+        }
+        .wrap .logo {
+            width: 10%;
+            padding: 3vw;
+        }
+        .footerlogo .small {
+            width: 50%;
+        }
+        .footer-backimg p {
+            color: #FFFFFF;
+            font-size: 1vw;
+            padding-bottom: 2vw;
+        }
+        .footer-backimg {
+            background-position: top center;
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+<div class='home'>
+    <div class='block1'>
+        <div class='header'>
+            <div class='header-logo'>菜宝钱包</div>
+            <div class='header-nav'>
+                <div class='header-nav-item_active'>
+                    首页
+                </div>
+                <div class='header-nav-item'>
+                    技术优势
+                </div>
+                <div class='header-nav-item'>
+                    开发文档
+                </div>
+                <div class='header-nav-item'>
+                    USDT交易所
+                </div>
+                <button class='register flex-center'>
+                    注册
+                </button>
+                <button class='login flex-center'>
+                    登录
+                </button>
+                <div class='header-nav-item'>
+                    联系我们
+                </div>
+            </div>
+        </div>
+        <div class='block1-text'>
+            <div class='block1-text-title'>即使您区块链零知识</div>
+            <p>
+                菜宝钱包也能让您的平台、商城、实现一键调用API接口、一键生成USDT钱包、一键自动实现USDT充提、一键归集全部地址、一键实名寄售USDT。
+            </p>
+            <p>为您提供安全、稳定、高效、简便的一站式支付系统和服务。</p>
+            <p>做全行业最专业的TRC-20-USDT支付系统   </p>
+            <p>做全行业最方便接入的TRC20-USDT支付系统</p>
+            <div class='customer'>
+                <img src='/service.png'/>
+            </div>
+        </div>
+        <div class='block1-text2'>
+            <div class='block1-text2-title'>匿名支付</div>
+            <div class='block1-text2-dec'>
+                <img src='/toptext.png'/>
+            </div>
+            <p>平台、商城用户匿名使用，0.1~3分钟快速到账。</p>
+            <p>更安全、更快捷、更隐匿、助您布局全球化商业版图</p>
+        </div>
+    </div>
+    <div class="threewrap">
+        <div class="dot">
+            <img src="/dot01.png">
+        </div>
+        <div class="wrapcenter">
+            <span class="bkcolor"></span>
+            <ul class="flex align-items-center space-between">
+                <li class="backimg" style="background-image: url(/biasbk.png);">
+                    <img src="/bias01.png">
+                    <div class="text">
+                        <h3 style='margin-bottom: 5px'>更高安全的隐匿性</h3>
+                        <p>区块链特性，收付更隐匿、资金来源去向更安全。</p>
+                        <p>解决传统支付方式风控监管问题，直接链上交互，资金转移，无任何限制。 </p>
+                    </div>
+                </li>
+                <li class="backimg" style="background-image: url(/biasbk.png);">
+                    <img src="/bias02.png">
+                    <div class="text">
+                        <h3 style='margin-bottom: 5px'>更快速的交易效率</h3>
+                        <p>具有区块链去中心化、公开、不可篡改的属性，0.1~3分钟到账。</p>
+                        <p> TRC20-USDT，最短的交易时间，最适合特定行业的收付。 </p>
+                    </div>
+                </li>
+                <li class="backimg" style="background-image: url(/biasbk.png);">
+                    <img src="/bias03.png">
+                    <div class="text">
+                        <h3 style='margin-bottom: 5px'>零成本使用</h3>
+                        <p>TRC20-SUDT，零成本使用，零转账费用。 一站式接入，技术全面支持。</p>
+                        <p style="opacity: 0;"> 解决传统支付方式风控监管问题，直接链上交互，资金转移，无任何限制。 </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="sportswrap">
+        <div class="fourwrap">
+            <div class="wrapcenter">
+                <img class="topdot" src="/dot02.png">
+                <div class="title flex-row-center">
+                    <h3>解决方案</h3>
+                    <img style='margin-bottom: 0.4vw' src="/textimg01.png">
+                </div>
+                <ul class="flex space-between">
+                    <li class="flex column align-items-center">
+                        <img src="/sport01.png">
+                        <div class="text">
+                            <h3>电商</h3>
+                            <p>整合全球资源，打造一站式支付系统。</p>
+                        </div>
+                    </li>
+                    <li class="flex column align-items-center">
+                        <img src="/sport02.png">
+                        <div class="text">
+                            <h3>游戏</h3>
+                            <p>为各类型网络游戏、手机游戏、棋牌游戏、合法娱乐等任何领域客户的支付、结算量身定制最安全最快捷的系统。</p>
+                            <p>提现、地址生成、备注管理等，专注专业于TRC20-USDT。公钥衍生技术，私钥永不触网，阻止黑客入侵，防内鬼盗币。</p>
+                        </div>
+                    </li>
+                    <li class="flex column align-items-center">
+                        <img src="/sport03.png">
+                        <div class="text">
+                            <h3>金融</h3>
+                            <p>公钥衍生技术，私钥永不触网，阻止黑客入侵，防内鬼盗币。</p>
+                            <p>最适合金融行业。</p>
+                        </div>
+                    </li>
+                </ul>
+                <img class="bottomdot" src="/dot02.png">
+            </div>
+        </div>
+    </div>
+    <div class="sixwrap">
+        <div class="wrapcenter">
+            <div class="flex-column-center title">
+                <h3>行业顶尖合作伙伴</h3>
+                <img src="/textimg03.png">
+            </div>
+            <ul class="flex align-items-center space-between">
+                <li>
+                    <a href="javascript:void(0)">
+                        <img src="/icon01.png">
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)">
+                        <img src="/icon02.png">
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)">
+                        <img src="/icon03.png">
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)">
+                        <img src="/icon04.png">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-backimg" style="background-image: url(/footer.png);">
+        <div class="wrapcenter flex-column-center">
+            <div class="footerlogo flex align-items-center space-between">
+                <a href="/home.html">
+                <img src="/logo03.png" class="logo">
+                </a>
+                <a  target="_blank" rel="nofollow" title="联络 Telegram:@caibao_it">
+                    <img src="/icon05.png" class="small">
+                </a>
+            </div>
+            <p>Copyright©2015-2021 Caibao.it All Rights Reserved | 隐私条款 |</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -4,6 +4,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const ROOT_DIRECTORY = path.join(__dirname)
 const SRC_DIRECTORY = path.join(ROOT_DIRECTORY, 'src')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
     mode: 'production',
@@ -16,6 +17,21 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /\.md$/,
+                use: 'raw-loader',
+            },
+            {
+                test: /\.(jpe?g|png|gif)$/,
+                // use: [
+                //     {
+                //         loader: 'file-loader',
+                //         options: {
+                //             name: '[path][name].[ext]',
+                //         },
+                //     },
+                // ],
+            },
             {
                 test: /\.(js|jsx|ts|tsx)$/,
                 exclude: /node_modules/,
@@ -56,23 +72,25 @@ module.exports = {
                             },
                         },
                     },
+                    'postcss-loader',
                 ],
-            },
-            {
-                test: /\.(jpe?g|png|gif)$/,
             },
         ],
     },
     plugins: [
+        // new BundleAnalyzerPlugin(),
         new HTMLWebpackPlugin({
             template: path.join(SRC_DIRECTORY, 'index.html'),
         }),
         new MiniCssExtractPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [{ from: 'public' }],
+        }),
     ],
     output: {
         publicPath: '/',
-        filename: '[name]-[contenthash:8].bundle.js',
-        chunkFilename: '[name]-[contenthash:8].bundle.js',
+        filename: '[name].bundle.js',
+        chunkFilename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
     },
 }

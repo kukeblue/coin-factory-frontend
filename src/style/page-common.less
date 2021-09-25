@@ -1,0 +1,52 @@
+.common-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.common-page-body {
+    flex: 1;
+    display: flex;
+    width: 100%;
+}
+.common-page-side {
+    background-color: #fff;
+    height: 100%;
+    width: 20%;
+}
+.common-page-content {
+    background-color: #fff;
+    width: 79%;
+    margin-left: 1%;
+    height: 100%;
+    overflow: auto;
+}
+.common-page-content ::-webkit-scrollbar {
+    display: none;
+}
+.common-page-side-icon {
+    margin-top: 70px;
+    .side-icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 10px;
+    }
+    .side-icon-text {
+        font-size: 17px;
+        font-weight: 400;
+        color: #15c8c0;
+    }
+}
+.common-page-side-item {
+    height: 60px;
+    font-size: 16px;
+}
+.common-page-menu-item {
+    padding-right: 10px;
+}
+.common-page-icon {
+    span {
+        font-size: 20px !important;
+    }
+    margin-top: 3px;
+    margin-right: 10px;
+}

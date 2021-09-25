@@ -30,7 +30,7 @@ function useGlobalStore() {
     }
 
     useEffect(() => {
-        if (!userInfo) return
+        if (!userInfo || userInfo.uid < 0) return
         const currentApp = chCache.getObCache('currentApp_' + userInfo.uid)
         if (currentApp) {
             setCurrentApp(currentApp)

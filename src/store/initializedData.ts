@@ -9,5 +9,5 @@ export const defaultUserInfo: IUserInfo = {
     mobile: '',
     mobile_auth: 0,
     nickname: '',
-    uid: 8,
+    uid: -1,
 }

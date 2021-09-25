@@ -7,13 +7,12 @@ import { CaretDownOutlined, CaretUpOutlined, QuestionCircleOutlined } from '@ant
 import { useForm } from 'antd/es/form/Form'
 import { useOptionFormListHook2, usePage } from '../../../utils/chHooks'
 import { GlobalStore } from '../../../store/globalStore'
-import { ICallBackLog, MWorkOrderStatusMap } from '../../applicationCenter/interface'
 import { AjAxPageCommonSetting } from '../../../config/constants'
-import { IRechargeBill, IWithdrawRecord, MWithdrawRecordStatus } from '../interface'
+import { IRechargeBill, IWithdrawRecord, MRechargeBillStatus, MWithdrawRecordStatus } from '../interface'
 import { ColumnsType } from 'antd/lib/table/interface'
-import LargeTextView from '../../../component/Format/LargeTextView/LargeTextView'
 import Authenticator from '../../../component/auth/Authenticator'
-
+import { useLocation } from 'react-router-dom'
+import qs from 'query-string'
 function RechargeBill() {
     const { currentApp } = GlobalStore.useContainer()
     const [formRef] = useForm()
@@ -22,6 +21,7 @@ function RechargeBill() {
         url: '/api/get_open_coins',
         query: { appid: currentApp!.id },
         labelKey: 'symbol',
+        valueKey: 'symbol',
         onAjaxAfter: (res) => {
             return { status: res.code, list: res.data }
         },
@@ -46,11 +46,13 @@ function RechargeBill() {
         })
     }
     const columns: ColumnsType<IRechargeBill> = [
-        { title: 'ID', dataIndex: 'id', key: 'id', fixed: 'left', width: 50 },
+        { title: 'ID', dataIndex: 'id', key: 'id', fixed: 'left', width: 80, align: 'center' },
         {
             title: '币种',
             dataIndex: 'symbol',
             key: 'symbol',
+            width: 80,
+            align: 'center',
         },
         { title: '流水号', dataIndex: 'ordid', key: 'ordid' },
         {
@@ -58,16 +60,26 @@ function RechargeBill() {
             dataIndex: 'amount',
             key: 'amount',
         },
+        {
+            title: '确认数',
+            dataIndex: 'confirmations',
+            key: 'confirmations',
+        },
+
         { title: '充值地址', dataIndex: 'address', key: 'address', width: 150 },
         { title: '来源地址', dataIndex: 'sourceaddr', key: 'sourceaddr', width: 150 },
-        { title: '哈希', dataIndex: 'txid', key: 'txid', width: 150 },
+        { title: '哈希', dataIndex: 'txid', key: 'txid', width: 200 },
         {
             title: '状态',
             dataIndex: 'status',
             key: 'status',
+            render: (status) => {
+                return <Tag color={status == 2 ? 'error' : status == 1 ? 'success' : 'processing'}>{MRechargeBillStatus.get(status)}</Tag>
+            },
         },
         {
             title: '操作',
+            align: 'center',
             dataIndex: 'option',
             key: 'option',
             fixed: 'right',
@@ -199,6 +211,7 @@ function RechargeBill() {
                 />
             </div>
             <Table
+                bordered
                 scroll={{ x: 1300 }}
                 loading={status === 'loading'}
                 rowKey="id"
@@ -490,7 +503,9 @@ function WithdrawRecord() {
 }
 
 function Bill() {
-    const [pageTab, setPageTab] = useState<string>('1')
+    const location = useLocation()
+    const prams = qs.parse(location.search)
+    const [pageTab, setPageTab] = useState<string>(prams.tab ? prams.tab.toString() : '1')
     return (
         <div className="capital-content">
             <div className="capital-content-header">
@@ -499,7 +514,7 @@ function Bill() {
                     <Menu.Item key="2">提币记录</Menu.Item>
                 </Menu>
             </div>
-            <div className="p-l-40 p-r-40">{pageTab == '1' ? <RechargeBill /> : <WithdrawRecord />}</div>
+            <div className="p-l-40 p-r-40">{pageTab === '1' ? <RechargeBill /> : <WithdrawRecord />}</div>
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Modal, Badge } from 'antd'
 import './index.less'
-import LargeTextView from '../../Format/LargeTextView/LargeTextView'
+import LargeTextView from '../../format/LargeTextView/LargeTextView'
 import { GlobalStore } from '../../../store/globalStore'
 import { ChUtils } from 'ch-ui'
 import { ISystemNotification } from '../../../typings'

@@ -26,9 +26,7 @@ const { Step } = Steps
 function SecurityPage() {
     return (
         <div className="security-page">
-            <div className="p-t-10 p-b-10">
-                <Alert message={constants.rechargeTip} type="warning" showIcon closable />
-            </div>
+            <div className="p-t-10 p-b-10">{false && <Alert message={constants.rechargeTip} type="warning" showIcon closable />}</div>
             <div className="security-content">
                 <Header />
                 <SecurityCertificateStatus />

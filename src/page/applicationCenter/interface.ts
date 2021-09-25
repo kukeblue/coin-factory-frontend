@@ -1,3 +1,23 @@
+export interface IReplay {
+    avatar: string
+    contents: string
+    nickname: string
+    replay_time: string
+}
+
+export interface IProtectSetting {
+    add_at: string
+    app_id: string
+    app_name: string
+    id: string
+    ips: string
+    lower_limit: string
+    remind_type: string
+    symbol: string
+    up_at: string
+    upper_limit: string
+}
+
 export interface IWordOrder {
     contents: string
     create_at: string
@@ -8,6 +28,18 @@ export interface IWordOrder {
     title: string
     update_at: string
     user_id: string
+}
+
+export interface IWorkOrderDetail {
+    Id: number
+    Ordid: string
+    Title: string
+    Contents: string
+    UserId: string
+    CreateAt: number
+    UpdateAt: number
+    Status: number
+    State: number
 }
 
 export interface IUserLog {
@@ -102,4 +134,8 @@ export const MCallMethodType = new Map([
     ['3', '请求地址'],
 ])
 
-export const MWorkOrderStatusMap = new Map([['0', '处理中']])
+export const MWorkOrderStatusMap = new Map([
+    ['0', '处理中'],
+    ['1', '已处理'],
+    ['2', '已解决'],
+])

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { ChForm, ChUtils, FormItemType } from 'ch-ui'
 import DropRangePicker from '../../../component/from/DropRangePicker'
-import { Button, Menu, Modal, Table } from 'antd'
-import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons'
+import { Button, Menu, message, Modal, Table } from 'antd'
+import { CaretDownOutlined, CaretUpOutlined, CopyOutlined } from '@ant-design/icons'
 import PSelect from '../../../component/from/PSelect'
 import { useForm } from 'antd/lib/form/Form'
 import { useOptionFormListHook2, usePage } from '../../../utils/chHooks'
@@ -11,6 +11,7 @@ import { GlobalStore } from '../../../store/globalStore'
 import { IAddress } from '../interface'
 import { ColumnsType } from 'antd/lib/table/interface'
 import Authenticator from '../../../component/auth/Authenticator'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 function Address() {
     const { currentApp } = GlobalStore.useContainer()
@@ -46,7 +47,26 @@ function Address() {
     const columns: ColumnsType<IAddress> = [
         { title: 'ID', dataIndex: 'id', key: 'id' },
         { title: '币种', dataIndex: 'symbol', key: 'symbol' },
-        { title: '地址', dataIndex: 'addr', key: 'addr' },
+        {
+            title: '地址',
+            dataIndex: 'addr',
+            key: 'addr',
+            render: (addr: string) => {
+                return (
+                    <div className="flex-center">
+                        <div className="m-r-5">{addr}</div>
+                        <CopyToClipboard
+                            text={addr || ''}
+                            onCopy={() => {
+                                message.success('复制成功')
+                            }}
+                        >
+                            <CopyOutlined />
+                        </CopyToClipboard>
+                    </div>
+                )
+            },
+        },
         {
             title: '时间',
             dataIndex: 'created_at',

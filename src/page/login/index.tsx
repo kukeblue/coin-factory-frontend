@@ -46,7 +46,7 @@ const LoginPageStore = createContainer(useLoginPageStore)
 
 function LoginCard() {
     const { login, toRegister, formRef } = useContainer(LoginPageStore)
-
+    const history = useHistory()
     const loginVerifyCallBack = (res: any) => {
         console.log('callback:', res)
         // res（用户主动关闭验证码）= {ret: 2, ticket: null}
@@ -98,7 +98,12 @@ function LoginCard() {
                 <div className="login-to-register">
                     没有账号？<a onClick={toRegister}>注册</a>
                 </div>
-                <div className="login-forget-password">
+                <div
+                    onClick={() => {
+                        history.push('/resetPassword')
+                    }}
+                    className="login-forget-password"
+                >
                     <a>忘记密码？</a>
                 </div>
             </div>

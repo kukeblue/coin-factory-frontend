@@ -13,7 +13,7 @@ import { useOptionFormListHook2, usePage } from '../../../utils/chHooks'
 import { ICallBackLog } from '../../applicationCenter/interface'
 import { AjAxPageCommonSetting } from '../../../config/constants'
 import { useForm } from 'antd/es/form/Form'
-import LargeTextView from '../../../component/Format/LargeTextView/LargeTextView'
+import LargeTextView from '../../../component/format/LargeTextView/LargeTextView'
 import DropRangePicker from '../../../component/from/DropRangePicker'
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons'
 import PSelect from '../../../component/from/PSelect'
@@ -46,7 +46,7 @@ function ModalRecharge() {
                 <div className="m-t-30 m-b-30 flex-center">
                     <div>cbadf3d59e287036d5b71eba9af153f4</div>
                     <CopyToClipboard
-                        text="123"
+                        text="cbadf3d59e287036d5b71eba9af153f4"
                         onCopy={() => {
                             message.success('复制成功')
                         }}

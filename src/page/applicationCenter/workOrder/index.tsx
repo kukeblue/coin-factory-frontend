@@ -1,56 +1,44 @@
 import React, { useEffect, useState } from 'react'
-import './index.less'
 import { Button, Menu, Table, Modal, Typography, Divider, notification, Popconfirm } from 'antd'
 import { usePage } from '../../../utils/chHooks'
-import { IWordOrder, MWorkOrderStatusMap } from '../interface'
+import { IWordOrder, IWorkOrderDetail, MWorkOrderStatusMap } from '../interface'
 import { AjAxPageCommonSetting } from '../../../config/constants'
 import { GlobalStore } from '../../../store/globalStore'
 import { createContainer } from 'unstated-next'
 import { ChForm, ChUtils, FormItemType } from 'ch-ui'
 import { useForm } from 'antd/lib/form/Form'
 import { ColumnsType } from 'antd/lib/table/interface'
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
+import { useHistory } from 'react-router-dom'
+import QuillEditor from '../../../component/from/QuillEditor'
 const { Title, Paragraph } = Typography
 
 function usePageStore() {
     const [pageTab, setPageTab] = useState<string>('1')
-    const [workOrderEditor, setWorkOrderEditor] = useState<IWordOrder>()
-    const [modalWorkDetail, setModalWorkDetail] = useState<boolean>(false)
+    const [workOrderEditor, setWorkOrderEditor] = useState<IWorkOrderDetail>()
+    const [modalWorkDetailShow, setModalWorkDetailShow] = useState<boolean>(false)
 
     return {
         pageTab,
         setPageTab,
         workOrderEditor,
         setWorkOrderEditor,
-        modalWorkDetail,
-        setModalWorkDetail,
+        modalWorkDetailShow,
+        setModalWorkDetailShow,
     }
 }
 
 const PageStore = createContainer(usePageStore)
 
-function QuillEditor({ value, onChange, style }: { value?: string; onChange?: (v: string) => {}; style?: any }) {
-    return (
-        <ReactQuill
-            theme="snow"
-            style={style}
-            value={value || ''}
-            onChange={(v) => {
-                onChange && onChange(v)
-            }}
-        />
-    )
-}
-
 function ModalWordDetail() {
-    const { modalWorkDetail, workOrderEditor, setModalWorkDetail } = PageStore.useContainer()
+    const { modalWorkDetailShow, workOrderEditor, setModalWorkDetailShow } = PageStore.useContainer()
     return (
-        <Modal footer={false} onCancel={() => setModalWorkDetail(false)} width={800} title="工单详情" visible={modalWorkDetail}>
+        <Modal footer={false} onCancel={() => setModalWorkDetailShow(false)} width={800} title="工单详情" visible={modalWorkDetailShow}>
             <Typography>
-                <Title level={2}>{workOrderEditor?.title}</Title>
+                <Title level={2}>{workOrderEditor?.Title}</Title>
                 <Paragraph>
-                    <div style={{ minHeight: '300px' }} dangerouslySetInnerHTML={{ __html: workOrderEditor ? workOrderEditor.contents : '' }}></div>
+                    <pre>
+                        <div style={{ minHeight: '300px' }} dangerouslySetInnerHTML={{ __html: workOrderEditor ? workOrderEditor.Contents : '' }}></div>
+                    </pre>
                 </Paragraph>
             </Typography>
         </Modal>
@@ -95,7 +83,7 @@ function WorkOrderForm() {
                         type: FormItemType.other,
                         name: 'content',
                         placeholder: '请输入标题',
-                        dom: <QuillEditor style={{ height: '400px' }} />,
+                        dom: <QuillEditor style={{ height: '300px' }} />,
                         rules: [{ required: true, message: '请输入工单内容' }],
                     },
                     {
@@ -117,8 +105,9 @@ function WorkOrderForm() {
 }
 
 function WorkOrderTable() {
-    const { setWorkOrderEditor, setModalWorkDetail } = PageStore.useContainer()
+    const { setWorkOrderEditor, setModalWorkDetailShow } = PageStore.useContainer()
     const { currentApp } = GlobalStore.useContainer()
+    const histort = useHistory()
     const { reload, list, total, status } = usePage<IWordOrder>({
         url: '/api/get_gongdan_list',
         pageSize: 10,
@@ -138,6 +127,20 @@ function WorkOrderTable() {
                 reload()
             }
         })
+    }
+    const getDetail = (id: string) => {
+        histort.push(`/applicationCenter/workOrder/detail/${id}`)
+        // ChUtils.Ajax.request({
+        //     url: '/api/get_gongdan_by_id',
+        //     data: {
+        //         id,
+        //     },
+        // }).then((res) => {
+        //     if (res.code == 0) {
+        //         setWorkOrderEditor(res.data)
+        //         setModalWorkDetailShow(true)
+        //     }
+        // })
     }
     const columns: ColumnsType<IWordOrder> = [
         { title: 'ID', dataIndex: 'id', key: 'id' },
@@ -167,8 +170,7 @@ function WorkOrderTable() {
                     <div>
                         <a
                             onClick={() => {
-                                setWorkOrderEditor(item)
-                                setModalWorkDetail(true)
+                                getDetail(item.id)
                             }}
                         >
                             详情
@@ -187,6 +189,7 @@ function WorkOrderTable() {
         <div className="p-l-40 p-r-40">
             <div className="m-t-20 m-b-20 button-add-1"></div>
             <Table
+                rowKey="id"
                 loading={status === 'loading'}
                 dataSource={list}
                 columns={columns}

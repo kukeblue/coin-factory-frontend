@@ -1,18 +1,21 @@
-import { Col, Progress, Row, Button, Card, Table } from 'antd'
+import { Col, Progress, Row, Button, Card, Table, Spin } from 'antd'
 import { ChTablePanel, ChUtils } from 'ch-ui'
 import React, { useEffect, useState } from 'react'
 import './index.less'
 import { IMarket } from './interface'
 import { GlobalStore } from '../../store/globalStore'
 import { IOpenCoin } from '../../typings'
+import CoinTemplate from '../../component/template/CoinTemplate'
+import { useHistory } from 'react-router-dom'
 
 function OpenedCoins() {
     const [openCoins, setOpenCoins] = useState<IOpenCoin[]>()
     const { currentApp } = GlobalStore.useContainer()
+    const history = useHistory()
     useEffect(() => {
         if (!currentApp) return
         ChUtils.Ajax.request({
-            url: '/api/get_open_coins',
+            url: '/api/get_index_coins',
             data: {
                 appid: currentApp?.id,
             },
@@ -27,41 +30,64 @@ function OpenedCoins() {
     return (
         <div className="home-openedCoins">
             <div className="title1 m-b-10 m-l-5">开通币种</div>
-            <Row>
-                <Col className="flex-center" span={8}>
-                    <Card hoverable className="home-openedCoins-item">
-                        <div className="flex-row-center">
-                            <div className="coin-pic m-r-10"></div>
-                            <div>
-                                <div className="coin-name-en">BTC</div>
-                                <div className="coin-name">比特币</div>
-                            </div>
-                        </div>
-                        <div className="coin-progress-wrap flex">
-                            <div className="coin-progress-label">地址数</div>
-                            <div className="coin-progress">
-                                <div style={{ textAlign: 'center' }}>70%</div>
-                                <div>
-                                    <Progress
-                                        success={{
-                                            percent: 70,
-                                            strokeColor: '#15C8C0',
-                                        }}
-                                        percent={70}
-                                        strokeWidth={15}
-                                        className="coin-progress-body"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex-between coin-item-option">
-                            <a>充值</a>
-                            <a>提币</a>
-                            <a>归集</a>
-                        </div>
-                    </Card>
-                </Col>
-            </Row>
+            <Spin spinning={openCoins === undefined}>
+                <Row style={{ minHeight: 100 }}>
+                    {openCoins?.map((item, index) => {
+                        return (
+                            <Col key={'_' + index} className="flex-center" span={8}>
+                                <Card hoverable className="home-openedCoins-item">
+                                    <div className="flex-row-center">
+                                        <div className="coin-pic m-r-10">
+                                            <img src={item.icon} />
+                                        </div>
+                                        <div>
+                                            <div className="coin-name-en">{item.coin_name}</div>
+                                            <div className="coin-name">{item.symbol}</div>
+                                        </div>
+                                    </div>
+                                    <div className="coin-progress-wrap flex">
+                                        <div className="coin-progress-label">地址数</div>
+                                        <div className="coin-progress">
+                                            <div style={{ textAlign: 'center' }}>
+                                                {/*{item.sacle}*/}
+                                                0%
+                                            </div>
+                                            <div>
+                                                <Progress
+                                                    success={{
+                                                        percent: 70,
+                                                        strokeColor: '#15C8C0',
+                                                    }}
+                                                    percent={70}
+                                                    strokeWidth={15}
+                                                    className="coin-progress-body"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="coin-item-option">
+                                        <a
+                                            onClick={() => {
+                                                history.push('/capital/recharge')
+                                            }}
+                                        >
+                                            充值
+                                        </a>
+                                        <a
+                                            onClick={() => {
+                                                history.push('/capital/recharge?tab=2')
+                                            }}
+                                            className="m-l-20"
+                                        >
+                                            提币
+                                        </a>
+                                    </div>
+                                </Card>
+                            </Col>
+                        )
+                    })}
+                </Row>
+            </Spin>
         </div>
     )
 }
@@ -71,67 +97,51 @@ function QuotationTable() {
     const columns = [
         {
             title: '#',
-            dataIndex: 'Rank',
-            key: 'Rank',
+            dataIndex: 'rank',
+            key: 'rank',
             sorter: {
-                compare: (a: IMarket, b: IMarket) => Number(a.Rank) - Number(b.Rank),
+                compare: (a: IMarket, b: IMarket) => Number(a.rank) - Number(b.rank),
                 multiple: 1,
             },
         },
         {
-            title: '简称',
+            title: '名称',
             dataIndex: 'Name',
-            sorter: {
-                compare: (a: IMarket, b: IMarket) => a.Name.localeCompare(b.Name),
-                multiple: 1,
-            },
+            // sorter: {
+            //     compare: (a: IMarket, b: IMarket) => a.Name.localeCompare(b.Name),
+            //     multiple: 1,
+            // },
             key: 'Name',
             render: (Name: string, item: IMarket) => {
+                return <CoinTemplate name={item.name} icon={item.logo_png} dec={item.symbol} />
+            },
+        },
+        {
+            title: '最新价',
+            dataIndex: 'price_usd',
+            key: 'price_usd',
+            render: (_: any, item: IMarket) => {
                 return (
-                    <div className="flex-row-center">
-                        <img src={'https://i.loli.net/2021/08/29/rgtP8s5VFKhnaYM.png'} className="coin-pic m-r-10"></img>
+                    <div>
                         <div>
-                            <div className="coin-name-en">{item.Symbol}</div>
-                            <div className="coin-name">{Name}</div>
+                            {item.price_usd}
+                            <span className="m-l-5">$</span>
+                        </div>
+                        <div>
+                            ≈{item.cny}
+                            <span className="m-l-5">¥</span>
                         </div>
                     </div>
                 )
             },
         },
         {
-            title: '流通市值（¥）',
-            dataIndex: 'MarketCapUsd',
-            key: 'MarketCapUsd',
-        },
-        {
-            title: '全球指数（¥）',
-            dataIndex: '4',
-            key: '4',
-        },
-        {
-            title: '24(H)（¥）',
-            dataIndex: 'PercentChange1h',
-            key: 'PercentChange1h',
-        },
-        {
-            title: '流通数量',
-            dataIndex: 'TotalSupply',
-            key: 'TotalSupply',
-        },
-        {
-            title: '24H换手',
-            dataIndex: 'Volume24hUsd',
-            key: 'Volume24hUsd',
-        },
-        {
-            title: '24H涨幅',
-            dataIndex: 'PercentChange24h',
-            key: 'PercentChange24h',
-        },
-        {
-            title: '7天指数趋势',
-            dataIndex: 'PercentChange7d',
-            key: 'PercentChange7d',
+            title: '24小时涨幅（¥）',
+            dataIndex: 'percent_change_h24',
+            key: 'percent_change_h24',
+            render: (percent_change_h24: string) => {
+                return <div className={Number(percent_change_h24) < 0 ? 'green' : 'red'}>{Number(percent_change_h24)}%</div>
+            },
         },
     ]
     useEffect(() => {

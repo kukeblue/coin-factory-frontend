@@ -12,7 +12,7 @@ import { useForm } from 'antd/es/form/Form'
 import { ICallBackLog, ICallBackUrlSetting, IRequestLog, MCallbackReturnType, MCallbackStyle, MCallMethodType } from '../interface'
 import { AjAxPageCommonSetting } from '../../../config/constants'
 import { ColumnsType } from 'antd/lib/table/interface'
-import LargeTextView from '../../../component/Format/LargeTextView/LargeTextView'
+import LargeTextView from '../../../component/format/LargeTextView/LargeTextView'
 
 type ManagePageTab = 'callbackSetting' | 'requestLog' | 'callbackLog'
 
@@ -178,16 +178,18 @@ function CallbackLogTable() {
             title: '数据',
             dataIndex: 'request_param',
             key: 'request_param',
+            width: 300,
             render: (request_param) => {
-                return <LargeTextView text={request_param} disableTooltip />
+                return <LargeTextView text={request_param} />
             },
         },
         {
             title: '响应',
             dataIndex: 'response_param',
             key: 'response_param',
+            width: 300,
             render: (response_param) => {
-                return <LargeTextView text={response_param} disableTooltip />
+                return <LargeTextView text={response_param} />
             },
         },
         {

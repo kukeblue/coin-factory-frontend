@@ -1,10 +1,9 @@
 const path = require('path')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const ROOT_DIRECTORY = path.join(__dirname)
 const SRC_DIRECTORY = path.join(ROOT_DIRECTORY, 'src')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const autoprefixer = require('autoprefixer')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
     mode: 'development',
@@ -20,7 +19,7 @@ module.exports = {
     devServer: {
         proxy: {
             '/api': {
-                target: 'http://uc.sqd8.cn/',
+                target: 'http://qkl.yipingxuan.net',
                 changeOrigin: true,
                 pathRewrite: { '^/api': '/api' },
                 onProxyReq: function (proxyReq, req, res) {
@@ -33,9 +32,14 @@ module.exports = {
         contentBase: './dist',
         historyApiFallback: true,
         hot: true,
+        inline: true,
     },
     module: {
         rules: [
+            {
+                test: /\.md$/,
+                use: 'raw-loader',
+            },
             {
                 test: /\.(jpe?g|png|gif)$/,
                 // use: [
@@ -98,6 +102,9 @@ module.exports = {
             template: path.join(SRC_DIRECTORY, 'index.html'),
         }),
         new MiniCssExtractPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [{ from: 'public' }],
+        }),
     ],
     output: {
         publicPath: '/',

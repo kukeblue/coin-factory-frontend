@@ -1,7 +1,7 @@
 import React from 'react'
 import Login from '../page/login'
 import Register from '../page/register'
-
+import ResetPassword from '../page/resetPassword'
 export const routes = [
     {
         path: '/login',
@@ -10,6 +10,10 @@ export const routes = [
     {
         path: '/register',
         component: <Register />,
+    },
+    {
+        path: '/resetPassword',
+        component: <ResetPassword />,
     },
 ]
 
@@ -29,5 +33,9 @@ export const needLoginRoutes = [
     {
         path: '/applicationCenter',
         routerPath: '/applicationCenter',
+    },
+    {
+        path: '/developDocument',
+        routerPath: '/developDocument',
     },
 ]

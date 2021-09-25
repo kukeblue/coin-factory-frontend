@@ -10,6 +10,7 @@ import HasAppCheck from '../../component/auth/HasAppCheck'
 import ProtectionSetting from './protectionSetting'
 import OperationLog from './operationLog'
 import WorkOrder from './workOrder'
+import WorkOrderDetail from './workOrder/detail'
 
 function ApplicationCenter() {
     const { currentApp } = GlobalStore.useContainer()
@@ -50,6 +51,13 @@ function ApplicationCenter() {
                   name: '我的工单',
                   icon: <QuestionCircleOutlined />,
                   component: <WorkOrder />,
+              },
+              {
+                  path: '/applicationCenter/workOrder/detail/:id',
+                  name: '工单详情',
+                  isChildPage: true,
+                  icon: <QuestionCircleOutlined />,
+                  component: <WorkOrderDetail />,
               },
           ]
         : []

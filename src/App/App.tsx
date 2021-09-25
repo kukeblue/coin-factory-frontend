@@ -24,11 +24,7 @@ export function App() {
 
                     {needLoginRoutes.map((item) => {
                         const DOM = loadable(() => import('../page' + item.path), {
-                            fallback: (
-                                <Spin tip={'loading'} spinning>
-                                    <div style={{ width: '100%', height: '100%' }} />
-                                </Spin>
-                            ),
+                            fallback: <div></div>,
                         })
                         return (
                             <Route key={item.path} path={item.routerPath}>
@@ -36,6 +32,9 @@ export function App() {
                             </Route>
                         )
                     })}
+                    <Route exact key="/developDocument" path="/developDocument">
+                        <Home />
+                    </Route>
                     <Route exact key="home" path="/">
                         <Home />
                     </Route>

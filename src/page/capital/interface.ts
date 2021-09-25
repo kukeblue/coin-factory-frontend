@@ -65,3 +65,9 @@ export const MWithdrawRecordStatus = new Map([
     ['2', '失败'],
     ['3', '待审核'],
 ])
+
+export const MRechargeBillStatus = new Map([
+    ['0', '未确认'],
+    ['1', '已确认'],
+    ['2', '失败'],
+])

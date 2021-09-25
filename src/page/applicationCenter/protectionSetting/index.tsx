@@ -7,8 +7,9 @@ import { GlobalStore } from '../../../store/globalStore'
 import TextArea from 'antd/lib/input/TextArea'
 import { useForm } from 'antd/lib/form/Form'
 import { createContainer } from 'unstated-next'
-import { ICallBackLog } from '../interface'
+import { ICallBackLog, IProtectSetting, IRequestLog } from '../interface'
 import { AjAxPageCommonSetting } from '../../../config/constants'
+import { ColumnsType } from 'antd/lib/table/interface'
 
 function usePageStore() {
     const [modalEditProtectionSetting, setModalEditProtectionSetting] = useState(false)
@@ -23,7 +24,7 @@ const PageStore = createContainer(usePageStore)
 function ThresholdLevelInput({ onChange, value }: { onChange?: (value: (number | undefined)[]) => void; value?: (number | undefined)[] }) {
     const onItemChange = (v: number, index: number) => {
         const newValue: (number | undefined)[] = value || [undefined, undefined]
-        newValue[index] = v
+        newValue[index] = Number(v.toFixed(2))
         onChange && onChange(newValue.slice())
     }
 
@@ -43,6 +44,7 @@ function ModalEditor() {
         url: '/api/get_open_coins',
         query: { appid: currentApp!.id },
         labelKey: 'symbol',
+        valueKey: 'symbol',
         onAjaxAfter: (res) => {
             return { status: res.code, list: res.data }
         },
@@ -129,7 +131,7 @@ function ModalEditor() {
 function ProtectionTable() {
     const { currentApp } = GlobalStore.useContainer()
     const { setModalEditProtectionSetting } = PageStore.useContainer()
-    const { reload, list, total, status } = usePage<ICallBackLog>({
+    const { reload, list, total, status } = usePage<IProtectSetting>({
         url: '/api/get_monitor_list',
         pageSize: 10,
         query: {},
@@ -137,7 +139,7 @@ function ProtectionTable() {
         onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
         isInitFetch: true,
     })
-    const columns = [
+    const columns: ColumnsType<IProtectSetting> = [
         {
             title: 'ID',
             dataIndex: 'id',
@@ -145,23 +147,35 @@ function ProtectionTable() {
         },
         {
             title: '币种',
-            dataIndex: '4',
-            key: '4',
+            dataIndex: 'symbol',
+            key: 'symbol',
         },
         {
             title: '阀值',
-            dataIndex: '1',
-            key: '1',
+            dataIndex: 'upper_limit',
+            key: 'upper_limit',
+            render: (upper_limit, item) => {
+                return (
+                    <div className="flex-row-center">
+                        <div className="m-r-5">{Number(item.lower_limit).toFixed(2)}</div>
+                        {` ~ `}
+                        <div className="m-l-5">{Number(item.upper_limit).toFixed(2)}</div>
+                    </div>
+                )
+            },
         },
         {
             title: '报警方式',
-            dataIndex: '3',
-            key: '3',
+            dataIndex: 'remind_type',
+            key: 'remind_type',
+            render: (remind_type) => {
+                return remind_type == 0 ? '邮箱' : '手机'
+            },
         },
         {
             title: '监控IP',
-            dataIndex: '5',
-            key: '5',
+            dataIndex: 'ips',
+            key: 'ips',
         },
         {
             title: '操作',
