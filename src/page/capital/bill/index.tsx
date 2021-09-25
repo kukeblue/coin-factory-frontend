@@ -211,7 +211,6 @@ function RechargeBill() {
                 />
             </div>
             <Table
-                bordered
                 scroll={{ x: 1300 }}
                 loading={status === 'loading'}
                 rowKey="id"

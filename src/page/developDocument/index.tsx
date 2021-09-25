@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Menu } from 'antd'
 import './index.less'
 import Markdown from 'markdown-to-jsx'
-import { BookOutlined } from '@ant-design/icons'
+import { ReadOutlined } from '@ant-design/icons'
 // import remarkGfm from 'remark-gfm'
 import md_index from '../../md/index.md'
 import md_hello from '../../md/hello.md'
@@ -16,8 +16,8 @@ function DevelopDocument() {
             <div className="common-page-body flex-center">
                 <div className="common-page-side">
                     <div className="common-page-side-icon flex-column-all-center">
-                        <div className="developDocument-icon flex-center">
-                            <BookOutlined style={{ fontSize: '50px', color: '#15c8c0' }} />
+                        <div className="icon-vbg-green flex-center m-b-10">
+                            <ReadOutlined />
                         </div>
                         <div className="side-icon-text">开发文档</div>
                     </div>

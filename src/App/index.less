@@ -4,17 +4,30 @@
 @import '../style/text-style.less';
 @import '../style/table-common.less';
 @import '../style/page-common.less';
-@import '../style/font-style.less';
-@primary-color: #15c8c0;
+@primary-color: rgb(0, 171, 85);
 @import '../var.less';
-
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    background-color: rgba(0, 171, 85, 0.06) !important;
+}
 .ant-table-thead .ant-table-cell {
     background-color: #f9f9f9;
     color: #7e7e7e !important;
+}
+.ant-table-cell {
+    font-weight: 400;
+    //font-family: 'PlusJakartaSans-ExtraBold', serif;
 }
 .ant-table-cell::before {
     display: none !important;
 }
 .ant-form-item-label > label {
     //height: unset !important;
+}
+.ant-table {
+    box-shadow: rgba(145, 158, 171, 0.24) 0px 0px 2px 0px, rgba(145, 158, 171, 0.24) 0px 16px 32px -4px;
+    border-radius: 16px;
+    border: 0 !important;
+}
+.ant-form-item-label {
+    font-weight: 600;
 }

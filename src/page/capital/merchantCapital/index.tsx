@@ -15,7 +15,7 @@ import { AjAxPageCommonSetting } from '../../../config/constants'
 import { useForm } from 'antd/es/form/Form'
 import LargeTextView from '../../../component/format/LargeTextView/LargeTextView'
 import DropRangePicker from '../../../component/from/DropRangePicker'
-import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons'
+import { CaretDownOutlined, CaretUpOutlined, CopyOutlined } from '@ant-design/icons'
 import PSelect from '../../../component/from/PSelect'
 
 function usePageStore() {
@@ -51,7 +51,10 @@ function ModalRecharge() {
                             message.success('复制成功')
                         }}
                     >
-                        <div className="button-copy"></div>
+                        <div className="button-copy">
+                            {' '}
+                            <CopyOutlined />
+                        </div>
                     </CopyToClipboard>
                 </div>
                 <div>

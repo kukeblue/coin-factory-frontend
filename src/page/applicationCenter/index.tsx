@@ -1,5 +1,5 @@
 import React from 'react'
-import { UnorderedListOutlined, DollarCircleOutlined, SyncOutlined, GlobalOutlined, FileTextOutlined, QuestionCircleOutlined } from '@ant-design/icons'
+import { UnorderedListOutlined, DollarCircleOutlined, SyncOutlined, FileTextOutlined, QuestionCircleOutlined, GlobalOutlined, SlackOutlined } from '@ant-design/icons'
 import CommonPage from '../../component/template/CommonPage'
 import './index.less'
 import Information from './Information'
@@ -64,7 +64,15 @@ function ApplicationCenter() {
     return (
         <div className="application-page">
             <HasAppCheck>
-                <CommonPage pageName="应用中心" pageIcon={<div className="applicationCenter-icon"></div>} pageRouters={pageRouters} />
+                <CommonPage
+                    pageName="应用中心"
+                    pageIcon={
+                        <div className="icon-vbg-green flex-center">
+                            <SlackOutlined />
+                        </div>
+                    }
+                    pageRouters={pageRouters}
+                />
             </HasAppCheck>
         </div>
     )

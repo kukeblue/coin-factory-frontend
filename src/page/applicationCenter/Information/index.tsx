@@ -219,9 +219,11 @@ function AppKeyChanger() {
     }
     return (
         <div className="flex-row-center">
-            <div>{appInfo?.appkey || '未设置'}</div>
+            <div style={{ fontFamily: 'PlusJakartaSans-ExtraBold' }}>{appInfo?.appkey || '未设置'}</div>
             <CopyToClipboard text={appInfo?.appkey || ''} onCopy={onCopy}>
-                <div className="button-copy"></div>
+                <div className="button-copy">
+                    <CopyOutlined />
+                </div>
             </CopyToClipboard>
             <Authenticator
                 callback={(v) => {

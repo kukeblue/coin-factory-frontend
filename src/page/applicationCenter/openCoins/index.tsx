@@ -468,7 +468,7 @@ function Header() {
     return (
         <div className="applicationCenter-common-header">
             <div style={{ width: '100%' }}>
-                <Menu defaultSelectedKeys={['0']} mode="horizontal">
+                <Menu defaultSelectedKeys={['1']} mode="horizontal">
                     <Menu.Item key="1">全部</Menu.Item>
                 </Menu>
             </div>

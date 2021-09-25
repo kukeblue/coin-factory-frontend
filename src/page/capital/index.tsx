@@ -16,7 +16,11 @@ function Capital() {
     return (
         <HasAppCheck>
             <CommonPage
-                pageIcon={<div className="capital-icon"></div>}
+                pageIcon={
+                    <div className="icon-vbg flex-center">
+                        <DollarOutlined />
+                    </div>
+                }
                 pageName="资金"
                 pageRouters={[
                     {

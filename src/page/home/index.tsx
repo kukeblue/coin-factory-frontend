@@ -1,5 +1,6 @@
 import { Col, Progress, Row, Button, Card, Table, Spin } from 'antd'
-import { ChTablePanel, ChUtils } from 'ch-ui'
+import { ChUtils } from 'ch-ui'
+import { AccountBookOutlined, DollarOutlined } from '@ant-design/icons'
 import React, { useEffect, useState } from 'react'
 import './index.less'
 import { IMarket } from './interface'
@@ -48,7 +49,7 @@ function OpenedCoins() {
                                     <div className="coin-progress-wrap flex">
                                         <div className="coin-progress-label">地址数</div>
                                         <div className="coin-progress">
-                                            <div style={{ textAlign: 'center' }}>
+                                            <div className="text-number" style={{ textAlign: 'center' }}>
                                                 {/*{item.sacle}*/}
                                                 0%
                                             </div>
@@ -56,7 +57,7 @@ function OpenedCoins() {
                                                 <Progress
                                                     success={{
                                                         percent: 70,
-                                                        strokeColor: '#15C8C0',
+                                                        strokeColor: 'rgb(0, 147, 87)',
                                                     }}
                                                     percent={70}
                                                     strokeWidth={15}
@@ -67,10 +68,12 @@ function OpenedCoins() {
                                     </div>
                                     <div className="coin-item-option">
                                         <a
+                                            // style={{ color: 'rgb(249, 185, 52)' }}
                                             onClick={() => {
                                                 history.push('/capital/recharge')
                                             }}
                                         >
+                                            <AccountBookOutlined />
                                             充值
                                         </a>
                                         <a
@@ -79,6 +82,7 @@ function OpenedCoins() {
                                             }}
                                             className="m-l-20"
                                         >
+                                            <DollarOutlined />
                                             提币
                                         </a>
                                     </div>
