@@ -73,7 +73,8 @@
             align-items: center;
             justify-content: center;
         }
-        .header-nav-item_active {
+        .header-nav-item:hover {
+            cursor: pointer;
             margin-right: .5vw;
             padding: 2vw .5vw 1vw;
             color: #FFFFFF;
@@ -375,6 +376,9 @@
             background-size: 100% auto;
             background-repeat: no-repeat;
         }
+        a {
+            text-decoration:none
+        }
     </style>
 </head>
 <body>
@@ -383,24 +387,22 @@
         <div class='header'>
             <div class='header-logo'>菜宝钱包</div>
             <div class='header-nav'>
-                <div class='header-nav-item_active'>
+                <div class='header-nav-item'>
                     首页
                 </div>
-                <div class='header-nav-item'>
-                    技术优势
-                </div>
-                <div class='header-nav-item'>
+                <a href="/developDocument"  class='header-nav-item'>
                     开发文档
-                </div>
-                <div class='header-nav-item'>
-                    USDT交易所
-                </div>
-                <button class='register flex-center'>
-                    注册
-                </button>
+                </a>
+                <a href='/register'>
+                    <button class='register flex-center'>
+                        注册
+                    </button>
+                </a>
+                <a href='/login'>
                 <button class='login flex-center'>
                     登录
                 </button>
+                </a>
                 <div class='header-nav-item'>
                     联系我们
                 </div>

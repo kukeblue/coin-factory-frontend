@@ -103,7 +103,7 @@ function ApplicationCards() {
                                                     setLoading(false)
                                                     setCurrentApp(app)
                                                     notification.success({ message: '切换应用成功' })
-                                                    history.push('/')
+                                                    history.push('/dashboard')
                                                 }, 1000)
                                             }}
                                             size="small"

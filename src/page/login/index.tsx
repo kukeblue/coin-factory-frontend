@@ -26,7 +26,7 @@ function useLoginPageStore() {
                 if (res.code != -1) {
                     fetchUserInfo()
                     setCurrentApp(undefined)
-                    history.push('/')
+                    history.push('/dashboard')
                 }
             })
         })

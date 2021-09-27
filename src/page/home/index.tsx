@@ -57,7 +57,7 @@ function OpenedCoins() {
                                                 <Progress
                                                     success={{
                                                         percent: 70,
-                                                        strokeColor: 'rgb(0, 147, 87)',
+                                                        strokeColor: '#29B6B0',
                                                     }}
                                                     percent={70}
                                                     strokeWidth={15}
@@ -163,7 +163,7 @@ function QuotationTable() {
         <div className="title1 m-t-70">
             <div className="m-b-20">行情数据</div>
             <div>
-                <Table rowKey="Id" dataSource={list} columns={columns} pagination={false}></Table>
+                <Table rowKey="name" dataSource={list} columns={columns} pagination={false}></Table>
             </div>
         </div>
     )

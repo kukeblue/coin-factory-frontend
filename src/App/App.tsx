@@ -32,10 +32,10 @@ export function App() {
                             </Route>
                         )
                     })}
-                    <Route exact key="/developDocument" path="/developDocument">
+                    <Route key="dashboard" path="/dashboard">
                         <Home />
                     </Route>
-                    <Route exact key="home" path="/">
+                    <Route key="home" path="/">
                         <Home />
                     </Route>
                 </Switch>
