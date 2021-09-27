@@ -1,10 +1,9 @@
-
 export type PayType = 1 | 2 | 3
 
 export const PayTypeMap = {
     1: '预付款',
     2: '到付款',
-    3: '回单付'
+    3: '回单付',
 }
 
 export type WaybillStatus = 1 | 2
@@ -42,5 +41,5 @@ export default {
     WaybillStatusMap,
     PayStatusMap,
     InvoiceStatusMap,
-    TradingStatusMap
+    TradingStatusMap,
 }

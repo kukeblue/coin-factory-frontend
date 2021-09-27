@@ -302,6 +302,7 @@ function AppSecretChanger() {
 }
 
 function InformationForm() {
+    const { setCurrentApp, currentApp } = GlobalStore.useContainer()
     const { appInfo } = InformationFormPageStore.useContainer()
     const { formRef } = InformationFormPageStore.useContainer()
     const [loading, setLoading] = useState(false)
@@ -349,6 +350,13 @@ function InformationForm() {
                 .then((res) => {
                     if (res.code === 0) {
                         notification.success({ message: '保存成功' })
+                        setCurrentApp(
+                            Object.assign({}, currentApp, {
+                                app_name: values.app_name,
+                                logo: values.logo[0].response && values.logo[0].response.data.File ? values.logo[0].response.data.FileUrl : appInfo?.logo ? appInfo.logo : undefined,
+                                state: values.state,
+                            })
+                        )
                     }
                 })
                 .finally(() => {

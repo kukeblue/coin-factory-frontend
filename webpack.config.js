@@ -24,7 +24,7 @@ module.exports = {
                 pathRewrite: { '^/api': '/api' },
                 onProxyReq: function (proxyReq, req, res) {
                     // 监听代理的返回结果
-                    console.log('Cookie:', proxyReq.getHeader('Cookie'))
+                    // console.log('Cookie:', proxyReq.getHeader('Cookie'))
                 },
             },
         },
