@@ -33,6 +33,20 @@ function OpenedCoins() {
             <div className="title1 m-b-10 m-l-5">开通币种</div>
             <Spin spinning={openCoins === undefined}>
                 <Row style={{ minHeight: 100 }}>
+                    {openCoins && openCoins.length === 0 && (
+                        <div className="home-openedCoins-empty flex-column-all-center">
+                            <div>您暂时未开通货币</div>
+                            <Button
+                                onClick={() => {
+                                    history.push('/applicationCenter/openCoin')
+                                }}
+                                type="primary"
+                                className="m-t-30 home-openedCoins-empty-open-button"
+                            >
+                                去开通
+                            </Button>
+                        </div>
+                    )}
                     {openCoins?.map((item, index) => {
                         return (
                             <Col key={'_' + index} className="flex-center" span={8}>
