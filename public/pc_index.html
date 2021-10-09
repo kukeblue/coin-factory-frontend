@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
+    <link rel="shortcut  icon" href="/logo.svg" type="image/x-icon" />
     <meta charset='UTF-8'>
-    <title>Title</title>
+    <title>135代币</title>
     <style>
         body, html {
             padding: 0;
             margin: 0;
-            font: 12px/1.5 "微软雅黑", "黑体", "宋体";
+            font: 12px/1.5 'PingFang SC';
+            font-family: 'PingFang SC', 'Hiragino Sans GB', 'Heiti SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', serif;
             width: 100%;
             height: 100%;
         }
@@ -25,6 +27,10 @@
             align-items: center;
             flex-direction: column;
         }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+        }
         button {
             border: none;
             background-color: transparent;
@@ -36,10 +42,95 @@
         }
         .block1 {
             width: 100%;
-            height: auto;
+            height: 100vw;
             box-sizing: border-box;
             padding: 0px 10%;
-            background-image: url("/top01.jpg");
+            background-image: url("/top01.png");
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+        }
+        .block1-payment-desc {
+            font-size: 0.9vw;
+            margin-top: 30vw;
+            color: #34495e;
+            width: 26vw;
+            margin-left: 48vw;
+            line-height: 1.3vw;
+        }
+        .block2 {
+            width: 100%;
+            height: 40vw;
+            box-sizing: border-box;
+            background-image: url("/top02.png");
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+            padding: 19vw 17vw;
+        }
+        .block2-item {
+            width: 17vw;
+        }
+        .block2-item-text {
+            text-align: left;
+            font-size: 0.9vw;
+        }
+        .block2-item-title {
+            font-size: 1.3vw;
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 0.5vw;
+            text-align: center;
+        }
+        .block3 {
+            width: 100%;
+            height: 50vw;
+            box-sizing: border-box;
+            background-image: url("/top03.png");
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+            padding: 33.5vw 13.5vw 17vw 14vw;
+        }
+        .block3-item {
+            width: 20vw;
+        }
+        .block3-center-item {
+            width: 23vw;
+        }
+        .block3-item-text {
+            text-align: left;
+            font-size: 0.9vw;
+        }
+        .block3-item-title {
+            font-size: 1.3vw;
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 0.5vw;
+            text-align: center;
+        }
+        .block4 {
+            position: relative;
+            top: -0.3vw;
+            width: 100%;
+            height: 40vw;
+            box-sizing: border-box;
+            background-image: url("/top04.png");
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+        }
+        .block5 {
+            margin-top: 5vw;
+            width: 100%;
+            height: 30vw;
+            box-sizing: border-box;
+            background-image: url("/top05.png");
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+        }
+        .block6 {
+            margin-top: 10vw;
+            width: 100%;
+            height: 20vw;
+            box-sizing: border-box;
+            background-image: url("/top06.png");
             background-size: 100% auto;
             background-repeat: no-repeat;
         }
@@ -59,7 +150,6 @@
         .header-logo {
             display: flex;
             align-items: center;
-            border: 1px solid #0bb6ad;
             height: 3vw;
             width: 9vw;
             color: #fff;
@@ -106,8 +196,8 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1vw;
-            background-color: #d0d9fb;
-            color: #0749f9;
+            background-color: #fff;
+            color: #0bb6ad;
             line-height: 1vw;
         }
         .block1-text {
@@ -126,25 +216,27 @@
         }
         .customer {
             width: 25%;
-            margin-top: 2.8vw;
+            margin-top: 6.8vw;
+            position: relative;
         }
         .customer > img {
             width: 100%;
             height: auto;
         }
-        .block1-text2 {
-            margin-top: 23vw;
-            padding-left: 60%;
-            padding-bottom: 10vw;
+        .customer_text1 {
+            position: absolute;
+            top: 7.9vw;
+            left: 1vw;
+            color: #0bb6ad;
+            font-weight: 500;
+            font-size: 1vw;
         }
-        .block1-text2-title {
-            font-size: 2.2vw;
-            font-weight: 600;
-            padding-bottom: .5vw;
-            color: #34495e;
-        }
-        .block1-text2-dec {
-            width: 50%;
+        .customer_text2 {
+            position: absolute;
+            top: 9.6vw;
+            color: #333;
+            left: 1vw;
+            font-size: 0.7vw;
         }
         .block1-text2-dec > img {
             width: 100%;
@@ -380,12 +472,13 @@
             text-decoration:none
         }
     </style>
+
 </head>
 <body>
 <div class='home'>
     <div class='block1'>
         <div class='header'>
-            <div class='header-logo'>菜宝钱包</div>
+            <img src='biasbk.png' class='header-logo'></img>
             <div class='header-nav'>
                 <div class='header-nav-item'>
                     首页
@@ -411,138 +504,73 @@
         <div class='block1-text'>
             <div class='block1-text-title'>即使您区块链零知识</div>
             <p>
-                菜宝钱包也能让您的平台、商城、实现一键调用API接口、一键生成USDT钱包、一键自动实现USDT充提、一键归集全部地址、一键实名寄售USDT。
+                135钱包也能让您的平台、商城、实现一键调用API接口、一键生成USDT钱包、一键自动实现USDT充提、一键归集全部地址、一键实名寄售USDT。
             </p>
             <p>为您提供安全、稳定、高效、简便的一站式支付系统和服务。</p>
             <p>做全行业最专业的TRC-20-USDT支付系统   </p>
             <p>做全行业最方便接入的TRC20-USDT支付系统</p>
             <div class='customer'>
+                <div class='customer_text1'>联系客服</div>
+                <div class='customer_text2'>联系客服了解更多</div>
                 <img src='/service.png'/>
             </div>
-        </div>
-        <div class='block1-text2'>
-            <div class='block1-text2-title'>匿名支付</div>
-            <div class='block1-text2-dec'>
-                <img src='/toptext.png'/>
+            <div class='block1-payment-desc'>
+                平台、商城用户匿名使用，0.1~3分钟快速到账。
+                更安全、更快捷、更隐匿、助您布局全球化商业版图
             </div>
-            <p>平台、商城用户匿名使用，0.1~3分钟快速到账。</p>
-            <p>更安全、更快捷、更隐匿、助您布局全球化商业版图</p>
         </div>
     </div>
-    <div class="threewrap">
-        <div class="dot">
-            <img src="/dot01.png">
-        </div>
-        <div class="wrapcenter">
-            <span class="bkcolor"></span>
-            <ul class="flex align-items-center space-between">
-                <li class="backimg" style="background-image: url(/biasbk.png);">
-                    <img src="/bias01.png">
-                    <div class="text">
-                        <h3 style='margin-bottom: 5px'>更高安全的隐匿性</h3>
-                        <p>区块链特性，收付更隐匿、资金来源去向更安全。</p>
-                        <p>解决传统支付方式风控监管问题，直接链上交互，资金转移，无任何限制。 </p>
-                    </div>
-                </li>
-                <li class="backimg" style="background-image: url(/biasbk.png);">
-                    <img src="/bias02.png">
-                    <div class="text">
-                        <h3 style='margin-bottom: 5px'>更快速的交易效率</h3>
-                        <p>具有区块链去中心化、公开、不可篡改的属性，0.1~3分钟到账。</p>
-                        <p> TRC20-USDT，最短的交易时间，最适合特定行业的收付。 </p>
-                    </div>
-                </li>
-                <li class="backimg" style="background-image: url(/biasbk.png);">
-                    <img src="/bias03.png">
-                    <div class="text">
-                        <h3 style='margin-bottom: 5px'>零成本使用</h3>
-                        <p>TRC20-SUDT，零成本使用，零转账费用。 一站式接入，技术全面支持。</p>
-                        <p style="opacity: 0;"> 解决传统支付方式风控监管问题，直接链上交互，资金转移，无任何限制。 </p>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="sportswrap">
-        <div class="fourwrap">
-            <div class="wrapcenter">
-                <img class="topdot" src="/dot02.png">
-                <div class="title flex-row-center">
-                    <h3>解决方案</h3>
-                    <img style='margin-bottom: 0.4vw' src="/textimg01.png">
+    <div class='block2'>
+        <div class='flex-between'>
+            <div class='block2-item'>
+                <div class="block2-item-text">
+                    <div class='block2-item-title'>更高安全的隐匿性</div>
+                    <p>区块链特性，收付更隐匿、资金来源去向更安全。</p>
+                    <p>解决传统支付方式风控监管问题，直接链上交互，资金转移，无任何限制。 </p>
                 </div>
-                <ul class="flex space-between">
-                    <li class="flex column align-items-center">
-                        <img src="/sport01.png">
-                        <div class="text">
-                            <h3>电商</h3>
-                            <p>整合全球资源，打造一站式支付系统。</p>
-                        </div>
-                    </li>
-                    <li class="flex column align-items-center">
-                        <img src="/sport02.png">
-                        <div class="text">
-                            <h3>游戏</h3>
-                            <p>为各类型网络游戏、手机游戏、棋牌游戏、合法娱乐等任何领域客户的支付、结算量身定制最安全最快捷的系统。</p>
-                            <p>提现、地址生成、备注管理等，专注专业于TRC20-USDT。公钥衍生技术，私钥永不触网，阻止黑客入侵，防内鬼盗币。</p>
-                        </div>
-                    </li>
-                    <li class="flex column align-items-center">
-                        <img src="/sport03.png">
-                        <div class="text">
-                            <h3>金融</h3>
-                            <p>公钥衍生技术，私钥永不触网，阻止黑客入侵，防内鬼盗币。</p>
-                            <p>最适合金融行业。</p>
-                        </div>
-                    </li>
-                </ul>
-                <img class="bottomdot" src="/dot02.png">
+            </div>
+            <div class='block2-item'>
+                <div class="block2-item-text">
+                    <div class='block2-item-title'>更快速的交易效率</div>
+                    <p>具有区块链去中心化、公开、不可篡改的属性，0.1~3分钟到账。。</p>
+                    <p>TRC20-USDT，最短的交易时间，最适合特定行业的收付。</p>
+                </div>
+            </div>
+            <div class='block2-item'>
+                <div class="block2-item-text">
+                    <div class='block2-item-title'>零成本使用</div>
+                    <p>TRC20-SUDT，零成本使用，零转账费用。 一站式接入，技术全面支持。</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="sixwrap">
-        <div class="wrapcenter">
-            <div class="flex-column-center title">
-                <h3>行业顶尖合作伙伴</h3>
-                <img src="/textimg03.png">
+    <div class='block3'>
+        <div class='flex-between'>
+            <div class='block3-item'>
+                <div class="block3-item-text">
+                    <div class='block3-item-title'>更高安全的隐匿性</div>
+                    <p>区块链特性，收付更隐匿、资金来源去向更安全。</p>
+                    <p>解决传统支付方式风控监管问题，直接链上交互，资金转移，无任何限制。 </p>
+                </div>
             </div>
-            <ul class="flex align-items-center space-between">
-                <li>
-                    <a href="javascript:void(0)">
-                        <img src="/icon01.png">
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0)">
-                        <img src="/icon02.png">
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0)">
-                        <img src="/icon03.png">
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0)">
-                        <img src="/icon04.png">
-                    </a>
-                </li>
-            </ul>
+            <div class='block3-center-item'>
+                <div class="block3-item-text">
+                    <div class='block3-item-title'>更快速的交易效率</div>
+                    <p>具有区块链去中心化、公开、不可篡改的属性，0.1~3分钟到账。</p>
+                    <p>TRC20-USDT，最短的交易时间，最适合特定行业的收付。</p>
+                </div>
+            </div>
+            <div class='block3-item'>
+                <div class="block3-item-text">
+                    <div class='block3-item-title'>零成本使用</div>
+                    <p>TRC20-SUDT，零成本使用，零转账费用。 一站式接入，技术全面支持。</p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="footer-backimg" style="background-image: url(/footer.png);">
-        <div class="wrapcenter flex-column-center">
-            <div class="footerlogo flex align-items-center space-between">
-                <a href="/home.html">
-                <img src="/logo03.png" class="logo">
-                </a>
-                <a  target="_blank" rel="nofollow" title="联络 Telegram:@caibao_it">
-                    <img src="/icon05.png" class="small">
-                </a>
-            </div>
-            <p>Copyright©2015-2021 Caibao.it All Rights Reserved | 隐私条款 |</p>
-        </div>
-    </div>
+    <div class='block4'></div>
+    <div class='block5'></div>
+    <div class='block6'></div>
 </div>
 </body>
 </html>

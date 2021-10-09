@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Input, Menu, Modal, Table } from 'antd'
+import { Button, Input, Menu, Modal, Popconfirm, Table } from 'antd'
 import { ChForm, ChUtils, FormItemType } from 'ch-ui'
 import PSelect from '../../../component/from/PSelect'
 import { useOptionFormListHook2, usePage } from '../../../utils/chHooks'
@@ -10,6 +10,7 @@ import { createContainer } from 'unstated-next'
 import { ICallBackLog, IProtectSetting, IRequestLog } from '../interface'
 import { AjAxPageCommonSetting } from '../../../config/constants'
 import { ColumnsType } from 'antd/lib/table/interface'
+import { notification } from 'antd/es'
 
 function usePageStore() {
     const [modalEditProtectionSetting, setModalEditProtectionSetting] = useState(false)
@@ -139,6 +140,20 @@ function ProtectionTable() {
         onAjaxAfter: AjAxPageCommonSetting.onAjaxAfter,
         isInitFetch: true,
     })
+    const deleteProtectSetting = (item: IProtectSetting) => {
+        ChUtils.Ajax.request({
+            url: '/api/del_monitor_by_id',
+            data: {
+                id: item?.id,
+                appid: currentApp!.id,
+            },
+        }).then((res) => {
+            if (res.code === 0) {
+                notification.success({ message: '删除成功' })
+                reload()
+            }
+        })
+    }
     const columns: ColumnsType<IProtectSetting> = [
         {
             title: 'ID',
@@ -178,9 +193,21 @@ function ProtectionTable() {
             key: 'ips',
         },
         {
+            align: 'center',
             title: '操作',
-            dataIndex: '6',
-            key: '6',
+            dataIndex: 'option',
+            key: 'option',
+            render: (_: any, item: IProtectSetting) => {
+                return (
+                    <div>
+                        <Popconfirm title="确认删除该设置吗?" okButtonProps={{ danger: true }} onConfirm={() => deleteProtectSetting(item)}>
+                            <Button type="link" danger>
+                                删除
+                            </Button>
+                        </Popconfirm>
+                    </div>
+                )
+            },
         },
     ]
     return (

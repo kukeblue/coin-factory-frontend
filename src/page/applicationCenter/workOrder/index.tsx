@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Menu, Table, Modal, Typography, Divider, notification, Popconfirm } from 'antd'
+import { Button, Menu, Table, Modal, Typography, Tag, notification, Popconfirm } from 'antd'
 import { usePage } from '../../../utils/chHooks'
 import { IWordOrder, IWorkOrderDetail, MWorkOrderStatusMap } from '../interface'
 import { AjAxPageCommonSetting } from '../../../config/constants'
@@ -130,27 +130,17 @@ function WorkOrderTable() {
     }
     const getDetail = (id: string) => {
         histort.push(`/applicationCenter/workOrder/detail/${id}`)
-        // ChUtils.Ajax.request({
-        //     url: '/api/get_gongdan_by_id',
-        //     data: {
-        //         id,
-        //     },
-        // }).then((res) => {
-        //     if (res.code == 0) {
-        //         setWorkOrderEditor(res.data)
-        //         setModalWorkDetailShow(true)
-        //     }
-        // })
     }
     const columns: ColumnsType<IWordOrder> = [
         { title: 'ID', dataIndex: 'id', key: 'id' },
         { title: '标题', dataIndex: 'title', key: 'title' },
         {
             title: '状态',
+            align: 'center',
             dataIndex: 'status',
             key: 'status',
             render: (status) => {
-                return MWorkOrderStatusMap.get(status)
+                return <Tag color={status == 0 ? 'processing' : status == 1 ? 'warning' : 'success'}>{MWorkOrderStatusMap.get(status)}</Tag>
             },
         },
         {
@@ -175,7 +165,7 @@ function WorkOrderTable() {
                         >
                             详情
                         </a>
-                        <Popconfirm title="确认删除该工单吗?" onConfirm={() => deleteWorkOrder(item.id)}>
+                        <Popconfirm okButtonProps={{ danger: true }} title="确认删除该工单吗?" onConfirm={() => deleteWorkOrder(item.id)}>
                             <Button type="link" danger>
                                 删除
                             </Button>

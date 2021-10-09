@@ -5,6 +5,7 @@ import { Editor } from '@tinymce/tinymce-react'
 function QuillEditor({ value, onChange, style }: { value?: string; onChange?: (v: string) => void; style?: any }) {
     return (
         <Editor
+            value={value}
             apiKey="u43oin7bl36qsa3yj6w1vkp13kjfglxgyfux5glktrt398qb"
             init={{
                 language: 'zh_CN',
@@ -27,7 +28,7 @@ function QuillEditor({ value, onChange, style }: { value?: string; onChange?: (v
                 },
                 content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
             }}
-            onChange={(e) => {
+            onBlur={(e) => {
                 onChange && onChange(e.target.getContent())
             }}
         />

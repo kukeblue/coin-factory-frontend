@@ -89,9 +89,9 @@ function WorkOrderStep() {
     return (
         <div className="step-wrap m-b-30">
             <Steps type="navigation" current={workOrderDetail?.Status} onChange={() => {}} className="site-navigation-steps">
-                <Step status="process" title="处理中" />
-                <Step status="wait" title="已处理" />
-                <Step status="wait" title="已解决" />
+                <Step status={workOrderDetail?.Status === 0 ? 'process' : 'wait'} title="处理中" />
+                <Step status={workOrderDetail?.Status === 1 ? 'process' : 'wait'} title="已处理" />
+                <Step status={workOrderDetail?.Status === 2 ? 'process' : 'wait'} title="已解决" />
             </Steps>
         </div>
     )
@@ -170,12 +170,12 @@ function WorkOrderDetail() {
                 },
             }).then(() => {
                 notification.success({ message: '提交成功' })
+                fetchWorkOrderDetail(id)
+                fetchReplays(id)
                 setComment('')
-                history.replace('/applicationCenter/workOrder')
             })
         }
     }
-
     return (
         <div style={{ height: 0 }} className="applicationCenter-work-orderDetail p-l-40 p-r-40 p-t-30">
             <WorkOrderStep />
@@ -184,24 +184,26 @@ function WorkOrderDetail() {
             <Divider dashed />
             <WorkOrderRecords />
             <Divider />
-            <QuillEditor
-                style={{ height: 300 }}
-                value={comment}
-                onChange={(v) => {
-                    setComment(v)
-                }}
-            />
             {workOrderDetail?.Status != 2 && (
-                <div className="m-t-30 m-b-20">
-                    <div className="flex-row-center m-t-30">
-                        <div>是否解决：</div> <Switch onChange={(e) => setIsResolve(e)} />
+                <>
+                    <QuillEditor
+                        style={{ height: 300 }}
+                        value={comment}
+                        onChange={(v) => {
+                            setComment(v)
+                        }}
+                    />
+                    <div className="m-t-30 m-b-20">
+                        <div className="flex-row-center m-t-30">
+                            <div>是否解决：</div> <Switch onChange={(e) => setIsResolve(e)} />
+                        </div>
+                        <div className="flex-center">
+                            <Button onClick={submit} type="primary" className="button-add-1 m-t-20 m-b-20">
+                                提交
+                            </Button>
+                        </div>
                     </div>
-                    <div className="flex-center">
-                        <Button onClick={submit} type="primary" className="button-add-1 m-t-20 m-b-20">
-                            提交
-                        </Button>
-                    </div>
-                </div>
+                </>
             )}
         </div>
     )

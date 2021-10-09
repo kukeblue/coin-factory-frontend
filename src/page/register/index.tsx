@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './index.less'
-import { Button, Menu, Input, Checkbox, Modal } from 'antd'
+import { Button, Menu, Input, Checkbox, Modal, notification } from 'antd'
 import { ChForm, ChUtils, FormItemType } from 'ch-ui'
 import VerificationCodeInput from '../../component/from/ChVerificationCodeInput'
 import { createContainer, useContainer } from 'unstated-next'
@@ -8,7 +8,6 @@ import { MenuInfo } from 'rc-menu/lib/interface'
 import { useForm } from 'antd/lib/form/Form'
 import { useHistory } from 'react-router-dom'
 import { FormDataItem } from 'ch-ui/src/component/ChForm/index'
-
 type RegistrationMethod = 'email' | 'phone'
 
 function useRegisterPageStore() {
@@ -36,16 +35,10 @@ function useRegisterPageStore() {
                     ticket,
                     randstr,
                 },
-            }).then((res: { code: number; msg: string; data: any }) => {
+            }).then((res) => {
                 if (res.code !== -1) {
-                    modal.info({
-                        title: '恭喜注册成功！',
-                        okText: '去登录',
-                        onOk: () => {
-                            history.push('/login')
-                        },
-                        content: <div> 请点击确认跳转登录 </div>,
-                    })
+                    history.replace('/login')
+                    notification.success({ message: '注册成功！请登录' })
                 }
             })
         })
