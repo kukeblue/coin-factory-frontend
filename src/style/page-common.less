@@ -13,13 +13,23 @@
     height: calc(100vh - 70px);
     width: 20%;
     overflow-y: auto;
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
+}
+.common-page-side::-webkit-scrollbar {
+    width: 0 !important;
 }
 .common-page-content {
     background-color: #fff;
     width: 79%;
     margin-left: 1%;
-    height: 100%;
     overflow: auto;
+    height: calc(100vh - 70px);
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
+}
+.common-page-content::-webkit-scrollbar {
+    width: 0 !important;
 }
 .common-page-content ::-webkit-scrollbar {
     display: none;
